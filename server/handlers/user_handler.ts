@@ -45,7 +45,7 @@ export const getUser = async (req: AuthorizedRequest<any>, res: Response) => {
  */
 
 export const register = async (req: Request, res: Response) => {
-  const { first_name, last_name, email, password, image, phone } = req.body;
+  const { first_name, last_name, email, password, image, phone, role } = req.body;
 
   try {
     // validations here
@@ -74,6 +74,7 @@ export const register = async (req: Request, res: Response) => {
       password,
       image,
       phone,
+      role: role || 'user',
     });
 
     // Convert ObjectId to string
@@ -89,11 +90,11 @@ export const register = async (req: Request, res: Response) => {
     });
 
     if (newUser) {
-      const { _id, first_name, last_name, email, image, phone } = newUser;
+      const { _id, first_name, last_name, email, image, phone, role } = newUser;
       // Send a success response with the user data (excluding password)
       res.status(201).json({
         message: 'User registered successfully',
-        user: { _id, first_name, last_name, email, image, phone, token },
+        user: { _id, first_name, last_name, email, image, phone, role, token},
       })
     }
   } catch (error: any) {

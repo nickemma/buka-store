@@ -1,6 +1,12 @@
 import mongoose, { InferSchemaType } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
+const ROLES = {
+  USER: 'user',
+  ADMIN: 'admin',
+  BUKA: 'buka',
+};
+
 const UserSchema = new mongoose.Schema(
   {
     first_name: {
@@ -42,6 +48,11 @@ const UserSchema = new mongoose.Schema(
     phone: {
       type: String,
       default: '+44',
+    },
+    role: {
+      type: String,
+      enum: [ROLES.USER, ROLES.ADMIN, ROLES.BUKA], // define the roles as constants to avoid typos
+      default: 'user',
     },
   },
   {

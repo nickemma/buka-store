@@ -1,0 +1,89 @@
+import { Request, Response } from 'express';
+import Cuisine from '../models/cuisine_model';
+
+/*
+ * @desc    Create a new cuisine
+ * @route   POST /api/cuisines
+ * @access  Private
+ */
+
+export const createCuisine = async (req: Request, res: Response) => {
+  try {
+    const newCuisine = new Cuisine(req.body);
+    await newCuisine.save();
+    res.status(201).json(newCuisine);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to create cuisine', error });
+  }
+};
+
+/*
+ * @desc    Get all cuisine
+ * @route   GET /api/cuisines
+ * @access  Public
+ */
+export const getAllCuisines = async (req: Request, res: Response) => {
+  try {
+    const cuisines = await Cuisine.find().populate('cuisine_owner');
+    res.status(200).json(cuisines);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to retrieve cuisines', error });
+  }
+};
+
+/*
+ * @desc    Get a single cuisine
+ * @route   GET /api/cuisines/:id
+ * @access  Public
+ */
+export const getCuisineById = async (req: Request, res: Response) => {
+  try {
+    const cuisine = await Cuisine.findById(req.params.id).populate('cuisine_owner');
+    if (cuisine) {
+      res.status(200).json(cuisine);
+    } else {
+      res.status(404).json({ message: 'Cuisine not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to retrieve cuisine', error });
+  }
+};
+
+/*
+ * @desc    Update a cuisine
+ * @route   GET /api/cuisines/:id
+ * @access  Private
+ */
+export const updateCuisine = async (req: Request, res: Response) => {
+  try {
+    const updatedCuisine = await Cuisine.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    if (updatedCuisine) {
+      res.status(200).json(updatedCuisine);
+    } else {
+      res.status(404).json({ message: 'Cuisine not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to update cuisine', error });
+  }
+};
+
+/*
+ * @desc    Delete a cuisine
+ * @route   GET /api/cuisines/:id
+ * @access  Private
+ */
+export const deleteCuisine = async (req: Request, res: Response) => {
+  try {
+    const deletedCuisine = await Cuisine.findByIdAndDelete(req.params.id);
+    if (deletedCuisine) {
+      res.status(200).json({ message: 'Cuisine deleted successfully' });
+    } else {
+      res.status(404).json({ message: 'Cuisine not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to delete cuisine', error });
+  }
+};
