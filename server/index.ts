@@ -8,7 +8,9 @@ import cookieParser from 'cookie-parser';
 
 // Routes import here
 import userRouter from './routes/user_routes';
-
+import bukaRoutes from './routes/buka_owner_routes';
+import cuisineRoutes from './routes/cuisine_routes';
+import orderRoutes from './routes/order_routes';
 
 const app = express();
 
@@ -30,6 +32,9 @@ app.get('/', (req, res) => {
 
 //============= Routes
 app.use('/api/users', userRouter);
+app.use('/api/bukas', bukaRoutes);
+app.use('/api/cuisines', cuisineRoutes);
+app.use('/api/orders', orderRoutes);
 
 //============= Server
 const PORT = process.env.PORT || 5000;
