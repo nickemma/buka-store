@@ -92,6 +92,6 @@ mongoose
       console.log(`Server running on port http://localhost:${PORT}`);
     });
   })
-  .catch((error) => {
+  .catch((error: any) => {
     console.log(error);
   });
