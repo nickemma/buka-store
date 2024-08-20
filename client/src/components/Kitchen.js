@@ -1,6 +1,20 @@
+"use client";
+
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Pin, PinIcon, PlusCircle, SearchIcon, UserIcon } from "lucide-react";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+
+import Link from "next/link";
+
+import {
+  Minus,
+  MinusCircle,
+  Pin,
+  PinIcon,
+  PlusCircle,
+  SearchIcon,
+  UserIcon,
+} from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,27 +26,54 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { useState } from "react";
+import { toast } from "sonner";
+import useCart from "./hooks/useCart";
+import { Label } from "@radix-ui/react-label";
 function Kitchen() {
+  const [quantity, setQuantity] = useState(1);
+  const [open, setOpen] = useState(false);
+  const [selected, setSelected] = useState();
+  const [role, setRole] = useState("");
+
   const items = [
     {
       id: 1,
       name: "Cozy Blanket",
       price: 29.99,
-      quantity: 2,
     },
     {
       id: 2,
       name: "Autumn Mug",
       price: 12.99,
-      quantity: 1,
     },
     {
       id: 3,
       name: "Fall Fragrance Candle",
       price: 16.99,
-      quantity: 3,
     },
   ];
+  
+
+  const handleCart = (data) => {
+ 
+    console.log({
+      ...data,
+      quantity,
+    });
+    toast.success(`${quantity} of ${data?.name}add to cart`, {
+      action: {
+        label: "Close",
+        onClick: () => console.log("Undo"),
+      },
+    });
+
+    setQuantity(0);
+    setOpen(false);
+  };
+
+  const { handleAddToCart } = useCart(quantity, setQuantity, setOpen);
+
   return (
     <div className="px-3">
       <div className="w-full h-[400px] relative">
@@ -61,23 +102,31 @@ function Kitchen() {
           </div>
         </div>
       </div>
-      <div className="grid md:grid-cols-3 my-14 gap-3">
+      <div className="grid md:grid-cols-3 my-14 gap-3 ">
         <div className="border rounded-md  p-3">
           <h1 className="text-xl font-bold">Your Cart</h1>
 
           <div className="flex flex-col gap-2 mt-3">
-            {items.map((item) => (
-              <div className="text-sm ">
-                {item?.name}
-                <hr />
+          <RadioGroup
+              onValueChange={(value) => setRole(value)}
+              defaultValue="user"
+              className="flex flex-col"
+            >
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="user" id="r2" />
+                <Label htmlFor="r2">User</Label>
               </div>
-            ))}
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="buka" id="r3" />
+                <Label htmlFor="r3">Buka</Label>
+              </div>
+            </RadioGroup>
           </div>
         </div>
         <div className="border rounded-md p-3">
-          <h1 className="text-xl font-bold">Your Cart</h1>
+          <h1 className="text-xl font-bold">Filter</h1>
           <div className="space-y-4">
-            {items.map((item) => (
+          {items.map((item) => (
               <div
                 key={item.id}
                 className="flex items-center justify-between gap-4"
@@ -101,33 +150,61 @@ function Kitchen() {
                     </p>
                   </div>
                 </div>
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button className="">
-                      <PlusCircle size={"20"} />
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>
-                        Are you absolutely sure?
-                      </AlertDialogTitle>
-                      <AlertDialogDescription>
-                        {item?.name}
-                        This action cannot be undone. This will permanently
-                        delete your account and remove your data from our
-                        servers.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction>Continue</AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
               </div>
             ))}
-          </div>
+          </div>{" "}
+          <AlertDialog open={open} onOpenChange={setOpen}>
+            <AlertDialogContent className="text-center">
+              <AlertDialogHeader>
+                <AlertDialogTitle></AlertDialogTitle>
+                <AlertDialogDescription></AlertDialogDescription>
+              </AlertDialogHeader>
+              <img src="/food-buka.png" />
+              <h3 className="text-[1rem] font-bold">{selected?.name}</h3>
+              <h3 className="text-[1rem] font-bold text-primary">
+                ${selected?.price}
+              </h3>
+              <div>
+                      <div className="flex items-center justify-center gap-3">
+                        <button
+                          disabled={quantity <= 0 && true}
+                          className=""
+                          onClick={() => {
+                            if (quantity <= 0) {
+                              setQuantity(0);
+                            } else {
+                              setQuantity((pre) => (pre -= 1));
+                            }
+                          }}
+                        >
+                          <MinusCircle size={"20"} />
+                        </button>
+                        <h3 className="text-[1rem] font-bold text-primary">
+                          {quantity}
+                        </h3>
+                        <button
+                          onClick={() => {
+                            setQuantity((pre) => (pre += 1));
+                          }}
+                          className=""
+                        >
+                          <PlusCircle size={"20"} />
+                        </button>
+                      </div>
+                    </div>
+
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <Button
+                  onClick={() => {
+                    handleAddToCart(selected);
+                  }}
+                >
+                  Add to Cart
+                </Button>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
         <div className="border rounded-md">hello</div>
       </div>
