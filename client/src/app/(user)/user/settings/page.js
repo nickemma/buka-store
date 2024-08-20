@@ -6,8 +6,8 @@ import { getCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
-function page() {
-  const [data, setData] = useState();
+function Settings() {
+  const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const cookie = getCookie("user");
   const myData = cookie ? JSON.parse(cookie) : "";
@@ -90,4 +90,4 @@ function page() {
   );
 }
 
-export default page;
+export default Settings;
