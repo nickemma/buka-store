@@ -4,20 +4,19 @@ import { useState } from "react";
 import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { login } from "@/components/hooks/useAuth";
+import { useLogin } from "@/components/hooks/useLogin";
 import PuffLoader from "react-spinners/PuffLoader";
 import { Checkbox } from "@/components/ui/checkbox";
 import Link from "next/link";
-export default function page() {
+export default function Login() {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
-  const { handleLogin } = login(email, password, setLoading);
+  const { handleLogin } = useLogin(email, password, setLoading);
 
   return (
     <section className="h-screen flex justify-center items-center">
     
-
       <div className=" h-full w-full flex justify-center items-center  ">
         <div className="bg-white w-full md:w-[500px]  rounded-md px-5 py-7">
           <img src="/buka-logo.png" width="200" height="200" />

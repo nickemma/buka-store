@@ -4,7 +4,7 @@ import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { register } from "@/components/hooks/useAuth";
+import { useRegister } from "@/components/hooks/useRegister";
 import { setCookie } from "cookies-next";
 import PuffLoader from "react-spinners/PuffLoader";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -12,7 +12,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Label } from "@radix-ui/react-label";
-export default function page() {
+export default function Register() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [password, setPassword] = useState("");
@@ -23,8 +23,8 @@ export default function page() {
 
   const router = useRouter();
 
-  console.log(role)
-  const { handleRegister } = register(
+  console.log(role);
+  const { handleRegister } = useRegister(
     firstName,
     lastName,
     password,

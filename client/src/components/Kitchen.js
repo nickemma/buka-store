@@ -81,7 +81,7 @@ function Kitchen() {
 
         <div className="absolute w-full flex text-center justify-center m-auto -bottom-10 left-0">
           <div className="w-full mx-3 md:w-[400px] shadow-md h-[200px] flex flex-col items-center justify-center  rounded-md bg-white">
-            <h2 className="text-[1.1rem]">Aduke's Kitchen</h2>
+            <h2 className="text-[1.1rem]">Aduke Kitchen</h2>
 
             <span className="text-[0.6rem] py-3">African, Nigeria</span>
             <span className="text-[0.8rem] py-3 flex items-center">
