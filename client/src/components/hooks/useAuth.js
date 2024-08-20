@@ -1,123 +1,75 @@
-// "use client";
-// import { useState, useEffect } from "react";
-// import { client } from "@/lib/sanity";
-// import axios from "axios";
-// import { setCookie } from "cookies-next";
-// import { getCookie } from "cookies-next";
-// import { useRouter } from "next/navigation";
-// import { toast } from "sonner";
-// var CryptoJS = require("crypto-js");
+"use client";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { setCookie } from "cookies-next";
+import { getCookie } from "cookies-next";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
-// export const register = (
-//   firstName,
-//   lastName,
-//   password,
-//   phone,
-//   email,
-//   setLoading
-// ) => {
-//   const [disable, setDisable] = useState(true);
-//   const router = useRouter();
-//   const handleRegister = async (e) => {
-//     e.preventDefault();
+const endpoint = "https://buka-store.vercel.app/";
 
-//     setLoading(true);
-//     if (!firstName || !lastName || !password || !phone || !email) {
-//       setLoading(false);
-//       toast.error("All input are required", {
-//         className: "bg-red-500",
-//         action: {
-//           label: "Close",
-//           onClick: () => console.log("Undo"),
-//         },
-//       });
-//     } else {
-//       const findUser = await client.fetch(
-//         `*[_type == 'user' &&  email == $email] [0]  `,
-//         {
-//           email: email,
-//         }
-//       );
+export const register = (
+  firstName,
+  lastName,
+  password,
+  phone,
+  email,
+  setLoading,
+  role
+) => {
+  const [disable, setDisable] = useState(true);
+  const router = useRouter();
+  console.log({
+    first_name: firstName,
+    last_name: lastName,
+    email: email,
+    password: password,
+    role: role,
+  });
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      await axios
+        .get(endpoint + "/register", {
+          first_name: firstName,
+          last_name: lastName,
+          email: email,
+          password: password,
+          role: role,
+        })
+        .then((res) => {
+          setLoading(false);
+          console.log(res.data);
+          toast.success("Account created successfully", {
+            className: "bg-red-500",
+            action: {
+              label: "Close",
+              onClick: () => console.log("Undo"),
+            },
+          });
 
-//       console.log(findUser);
-//       if (findUser) {
-//         setLoading(false);
-//         toast.error("User Already Exist", {
-//           className: "bg-red-500",
-//           action: {
-//             label: "Close",
-//             onClick: () => console.log("Undo"),
-//           },
-//         });
-//         console.log("User already exist");
-//       } else {
-//         var cyperwif = CryptoJS.AES.encrypt(password, "EMMYDON").toString();
-
-//         const mutations = [
-//           {
-//             create: {
-//               _type: "user",
-//               first_name: firstName,
-//               last_name: lastName,
-//               email: email,
-//               phone: phone,
-//               verify: false,
-//               password: cyperwif,
-//             },
-//           },
-//         ];
-
-//         const response = await client.create({
-//           _type: "user",
-//           first_name: firstName,
-//           last_name: lastName,
-//           email: email,
-//           phone: phone,
-//           verify: false,
-//           password: cyperwif,
-//         });
-
-//         setCookie(
-//           "user",
-//           JSON.stringify({
-//             firstName,
-//             lastName,
-//             _id: response._id,
-//             phone,
-//             email,
-//             verify: false,
-//           })
-//         );
-
-//         console.log(response);
-//         const otp = `${Math.floor(1000 + Math.random() * 9000)}`;
-
-//         await client.create({
-//           _type: "otp",
-//           id: response._id,
-//           otp_code: otp,
-//         });
-//         await axios
-//           .post("/api/signup", {
-//             otp: otp,
-//           })
-//           .then((res) => {
-//             setLoading(false);
-
-//             router.push("/otp");
-//             toast.success("Account created successfull", {
-//               action: {
-//                 label: "Close",
-//                 onClick: () => console.log("Undo"),
-//               },
-//             });
-//           })
-//           .catch((err) => console.log(err, "ckmkmdv"));
-//       }
-//     }
-//   };
-//   return { handleRegister };
-// };
+          setCookie("user", JSON.stringify(res.data));
+          if (res.data?.user?.role == "user") {
+            router.push("/user");
+          } else {
+            router.push("/buka");
+          }
+          router.refresh();
+        });
+    } catch (error) {
+      setLoading(false);
+      toast.error(error, {
+        className: "bg-red-500",
+        action: {
+          label: "Close",
+          onClick: () => console.log("Undo"),
+        },
+      });
+    }
+  };
+  return { handleRegister };
+};
 // export const verifyOtp = (otp, setLoading) => {
 //   const cookie = getCookie("user");
 //   const data = cookie ? JSON.parse(cookie) : "";
@@ -204,81 +156,47 @@
 
 //   return { handleVerify, data };
 // };
-// export const login = (email, password, setLoading) => {
-//   const router = useRouter();
-//   const handleLogin = async (e) => {
-//     e.preventDefault();
-//     setLoading(true);
-//     const users = await client.fetch(
-//       `*[_type == 'user' &&  email == $email] [0]  `,
-//       {
-//         email: email,
-//       }
-//     );
-//     const professionals = await client.fetch(
-//       `*[_type == 'professionals' &&  email == $email] [0]  `,
-//       {
-//         email: email,
-//       }
-//     );
+export const login = (email, password, setLoading) => {
+  const router = useRouter();
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setLoading(true);
 
-//     const data =
-//       professionals?._type == "professionals" ? professionals : users;
+    try {
+      await axios
+        .get(endpoint + "/login", {
+          password,
+          email,
+        })
+        .then((res) => {
+          setLoading(false);
+          console.log(res.data);
+          toast.success("Login successfully", {
+            className: "bg-red-500",
+            action: {
+              label: "Close",
+              onClick: () => console.log("Undo"),
+            },
+          });
+          setCookie("user", JSON.stringify(res.data));
+          if (res.data?.user?.role == "user") {
+            router.push("/user");
+          } else {
+            router.push("/buka");
+          }
+          router.refresh();
+        });
+    } catch (error) {
+      setLoading(false);
+      toast.error(error, {
+        className: "bg-red-500",
+        action: {
+          label: "Close",
+          onClick: () => console.log("Undo"),
+        },
+      });
+    }
+  };
 
-//     console.log(data, password, email);
-//     if (!data) {
-//       toast.error("User does not exist.", {
-//         action: {
-//           label: "Close",
-//           onClick: () => console.log("Undo"),
-//         },
-//       });
-//       setLoading(false);
-//     } else {
-//       var isMatch = CryptoJS.AES.decrypt(data?.password, "EMMYDON").toString(
-//         CryptoJS.enc.Utf8
-//       );
-
-//       console.log(password, isMatch);
-
-//       if (password !== isMatch) {
-//         toast.error("Invalid Credential", {
-//           action: {
-//             label: "Close",
-//             onClick: () => console.log("Undo"),
-//           },
-//         });
-//         setLoading(false);
-//       } else {
-//         delete data.password;
-//         setCookie(
-//           "user",
-//           JSON.stringify({
-//             firstName: data?.first_name,
-//             lastName: data?.last_name,
-//             _id: data?._id,
-//             phone: data?.phone,
-//             email: data?.email,
-//             verify: data?.verify,
-//           })
-//         );
-
-//         toast.success("Login Successfuly", {
-//           action: {
-//             label: "Close",
-//             onClick: () => console.log("Undo"),
-//           },
-//         });
-
-//         if (data?._type == "professionals") {
-//           router.push("/consultant/dashboard");
-//         } else {
-//           router.push("/user");
-//         }
-//         setLoading(false);
-//       }
-//     }
-//   };
-
-//   return { handleLogin };
-// };
+  return { handleLogin };
+};

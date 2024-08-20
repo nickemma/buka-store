@@ -1,6 +1,6 @@
 import { Inter } from "next/font/google";
-import "./globals.css";
-import { Toaster } from "@/components/ui/sonner";
+import ".././globals.css";
+import UserBar, { Navbar } from "@/components/bars/UserBar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -14,18 +14,13 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={inter.className}>
-        {children}
-        <div>
-          <Toaster
-            toastOptions={{
-              classNames: {
-                error: "bg-red-400",
-                success: "bg-green-500",
-                warning: "bg-yellow-500",
-                info: "bg-blue-400",
-              },
-            }}
-          />
+        <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
+          <UserBar />
+          <div className="flex flex-col">
+            <Navbar />
+
+            {children}
+          </div>
         </div>
       </body>
     </html>

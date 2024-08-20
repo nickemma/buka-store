@@ -62,7 +62,7 @@ export default function ProductCarousel({ header }) {
     },
   ];
 
-  const { handleAddToCart, handleDecrement, handleIncrement, cart } = useCart(data);
+  // const { handleAddToCart, handleDecrement, handleIncrement, cart } = useCart(data);
   return (
     <div className="w-full  mx-auto  pt-10 ">
       <h2 className="text-[1.2rem] mt-3 font-bold">{header}</h2>
@@ -93,9 +93,6 @@ export default function ProductCarousel({ header }) {
                       {product.price}
                     </div>
 
-                    <Button onClick={() => {
-                        handleAddToCart(product)
-                    }} className="w-full rounded-full h-[30px] mt-3">Add to Cart</Button>
                   </CardContent>
                 </Card>
               </div>

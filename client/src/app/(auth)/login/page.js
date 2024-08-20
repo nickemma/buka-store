@@ -15,16 +15,12 @@ export default function page() {
   const { handleLogin } = login(email, password, setLoading);
 
   return (
-    <section className="h-screen grid grid-cols-1  md:grid-cols-2  gap-5">
-      <div className="bg-[#2e37a4] hidden  md:flex items-center justify-center h-full rounded-r-20 rounded-e-[100px]  ">
-        <div>
-          <Image src="/Consulting.svg" width="600" height="600" />
-        </div>
-      </div>
+    <section className="h-screen flex justify-center items-center">
+    
 
       <div className=" h-full w-full flex justify-center items-center  ">
         <div className="bg-white w-full md:w-[500px]  rounded-md px-5 py-7">
-          <Image src="/logoo.png" width="200" height="200" />
+          <img src="/buka-logo.png" width="200" height="200" />
           <h2 className="text-[1.7rem] font-semibold my-6">Login</h2>
 
           <form className="flex flex-col gap-4">
@@ -53,7 +49,7 @@ export default function page() {
                 Remember me
               </label>
               <div>
-                <Link href="#" className="text-[#2e37a4] font-semibold text-sm">
+                <Link href="#" className="text-primary font-semibold text-sm">
                   Forgot Password?
                 </Link>
               </div>
@@ -63,7 +59,7 @@ export default function page() {
               <Button
                 onClick={handleLogin}
                 disabled={loading}
-                className="w-full  bg-[#2e37a4] "
+                className="w-full  bg-primary "
               >
                 {loading ? <PuffLoader size={25} color={"#fff"} /> : "Login"}
               </Button>
@@ -74,7 +70,7 @@ export default function page() {
                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
                 Need an account{"  "}
-                <Link href="/register" className="text-[#2e37a4] font-semibold">
+                <Link href="/register" className="text-primary font-semibold">
                   Sign Up
                 </Link>{" "}
               </label>
