@@ -42,8 +42,7 @@ export const useRegister = (
         })
         .then((res) => {
           setLoading(false);
-          console.log(res.data);
-          toast.success("Account created successfully", {
+          toast.success(res?.data?.message, {
             className: "bg-red-500",
             action: {
               label: "Close",

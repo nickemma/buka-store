@@ -17,7 +17,7 @@ export const useLogin = (email, password, setLoading) => {
 
     try {
       await axios
-        .post(endpoint + "login", {
+        .post(endpoint + "signin", {
           password,
           email,
         })

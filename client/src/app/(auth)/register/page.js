@@ -90,15 +90,6 @@ export default function Register() {
                 placeholder="Enter your full name"
               />
             </div>
-            <div>
-              <abel>Phone Number</abel>
-              <Input
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="Enter your phone number"
-              />
-            </div>
-
             <div className="flex gap-3 leading-none">
               <Checkbox id="terms1" />
               <label
