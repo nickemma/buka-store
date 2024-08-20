@@ -37,6 +37,8 @@ export const useRegister = (
           email: email,
           password: password,
           role: role,
+        }, {
+          withCredentials: true, 
         })
         .then((res) => {
           setLoading(false);
