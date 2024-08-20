@@ -22,9 +22,12 @@ app.use(express.json());
 app.use(
   cors({
     credentials: true,
-    origin: ["http://localhost:3000", "https://buka-store.vercel.app/", "http://localhost:5173"],
+    origin: ["http://localhost:3000", "https://buka-store.vercel.app/"],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'X-Requested-With', 'Accept'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   })
 );
+app.options('*', cors());
 app.use(morgan('dev'));
 app.use(cookieParser());
 
