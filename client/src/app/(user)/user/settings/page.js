@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { getCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import PuffLoader from "react-spinners/PuffLoader";
 
 function Settings() {
   const [data, setData] = useState(null);
