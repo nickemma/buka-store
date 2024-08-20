@@ -6,7 +6,7 @@ import { getCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-const endpoint = "https://buka-store.vercel.app/";
+const endpoint = "https://buka-store-client.vercel.app/api/users/";
 
 
 export const useLogin = (email, password, setLoading) => {
@@ -17,7 +17,7 @@ export const useLogin = (email, password, setLoading) => {
 
     try {
       await axios
-        .get(endpoint + "/login", {
+        .post(endpoint + "login", {
           password,
           email,
         })
@@ -41,7 +41,7 @@ export const useLogin = (email, password, setLoading) => {
         });
     } catch (error) {
       setLoading(false);
-      toast.error(error, {
+      toast.error(error.message, {
         className: "bg-red-500",
         action: {
           label: "Close",

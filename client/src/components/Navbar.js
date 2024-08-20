@@ -14,7 +14,7 @@ const Navbar = () => {
       </div>
 
       <div className="flex gap-3  ">
-        <button className=" w-[100px] h-[30px] flex justify-center items-center rounded md text-sm text-black  ">
+        <button className="  flex justify-center items-center rounded md text-sm text-black  ">
           <Search />
         </button>
         <Link
@@ -28,7 +28,7 @@ const Navbar = () => {
         </Link>
 
         <Link
-          href="/regiser"
+          href="/register"
           className="bg-green-500 w-[100px] h-[30px] flex justify-center items-center rounded md text-sm text-black   "
         >
           Regiser
