@@ -22,7 +22,7 @@ app.use(express.json());
 app.use(
   cors({
     credentials: true,
-    origin: '*',
+    origin: ["http://localhost:3000", "https://buka-store.vercel.app/", "http://localhost:5173"],
   })
 );
 app.use(morgan('dev'));
