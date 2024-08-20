@@ -6,6 +6,9 @@ import cors from 'cors';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 
+import swaggerUi from 'swagger-ui-express';
+import swaggerDocs from 'swagger-jsdoc'
+
 // Routes import here
 import userRouter from './routes/user_routes';
 import bukaRoutes from './routes/buka_owner_routes';
@@ -19,7 +22,7 @@ app.use(express.json());
 app.use(
   cors({
     credentials: true,
-    origin: 'http://localhost:3000',
+    origin: '*',
   })
 );
 app.use(morgan('dev'));
@@ -35,6 +38,47 @@ app.use('/api/users', userRouter);
 app.use('/api/bukas', bukaRoutes);
 app.use('/api/cuisines', cuisineRoutes);
 app.use('/api/orders', orderRoutes);
+
+//============= Swagger UI Docs
+const options = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Buka Store API',
+      version: '1.0.0',
+      description: 'An API for a buka store application where users can order food from different buka owners and also manage their orders.',
+      contact: {
+        name: 'Developer Name',
+        url: 'Developer URL here',
+        email: 'Developer email here',
+      },
+    },
+    servers: [
+      {
+        // url: 'http://localhost:5000',
+        url: 'https://buka-store.vercel.app/',
+      },
+    ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
+    },
+    security: [
+      {
+        bearerAuth: [],
+      },
+    ],
+  },
+  apis: ['./routes/*.ts'],
+};
+
+const specs = swaggerDocs(options);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 //============= Server
 const PORT = process.env.PORT || 5000;
