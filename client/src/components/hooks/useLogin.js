@@ -6,7 +6,7 @@ import { getCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-const endpoint = "https://buka-store-client.vercel.app/api/users/";
+const endpoint = "https://buka-store.vercel.app/api/users/";
 
 
 export const useLogin = (email, password, setLoading) => {
