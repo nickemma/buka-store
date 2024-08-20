@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { login } from "@/components/hooks/useAuth";
+import { useLogin } from "@/components/hooks/useAuth";
 import PuffLoader from "react-spinners/PuffLoader";
 import { Checkbox } from "@/components/ui/checkbox";
 import Link from "next/link";
@@ -12,7 +12,7 @@ export default function page() {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
-  const { handleLogin } = login(email, password, setLoading);
+  const { handleLogin } = useLogin(email, password, setLoading);
 
   return (
     <section className="h-screen flex justify-center items-center">

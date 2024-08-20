@@ -8,7 +8,7 @@ import { toast } from "sonner";
 
 const endpoint = "https://buka-store.vercel.app/";
 
-export const register = (
+export const useRegister = (
   firstName,
   lastName,
   password,
@@ -156,7 +156,7 @@ export const register = (
 
 //   return { handleVerify, data };
 // };
-export const login = (email, password, setLoading) => {
+export const useLogin = (email, password, setLoading) => {
   const router = useRouter();
   const handleLogin = async (e) => {
     e.preventDefault();
