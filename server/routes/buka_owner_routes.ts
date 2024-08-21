@@ -91,7 +91,7 @@
 
 import express from 'express';
 import { registerBuka, loginBuka, getSingleBuka, updateBuka } from '../handlers/buka_owner_handler';
-import protect from '../middleware/auth';
+import {protect} from '../middleware/auth';
 
 const router = express.Router();
 
