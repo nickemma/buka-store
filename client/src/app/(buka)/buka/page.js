@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import useCuisine from "@/components/hooks/useCuisine";
 import React from "react";
 
-function page() {
+function Buka() {
   const { data } = useCuisine();
   console.log(data)
   return (
@@ -32,4 +32,4 @@ function page() {
   );
 }
 
-export default page;
+export default Buka;
