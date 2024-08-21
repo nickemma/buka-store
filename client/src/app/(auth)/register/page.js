@@ -15,10 +15,11 @@ import { Label } from "@radix-ui/react-label";
 export default function Register() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [bukaName, setBukaName] = useState("");
   const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
-  const [role, setRole] = useState("");
+  const [role, setRole] = useState("user");
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
@@ -31,14 +32,15 @@ export default function Register() {
     phone,
     email,
     setLoading,
-    role
+    role,
+    bukaName,
   );
 
   return (
     <section className="h-screen lflex items-center justify-center   gap-5">
       <div className=" h-full w-full flex justify-center items-center  ">
         <div className="bg-white w-full md:w-[500px]  rounded-md px-5 py-7 ">
-          <Image src="/logoo.png" width="200" height="200" />
+          <Image src="/buka-logo.png" width="200" height="200" />
           <h2 className="text-[1.7rem] font-semibold my-6">Getting Started</h2>
 
           <form className="flex flex-col gap-4">
@@ -56,24 +58,37 @@ export default function Register() {
                 <Label htmlFor="r3">Buka</Label>
               </div>
             </RadioGroup>
+            {role === "user" ? (
+              <>
+                <div>
+                  <label>First Name</label>
+                  <Input
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    placeholder="Enter your first name"
+                  />
+                </div>
+                <div>
+                  <label>Last Name</label>
+                  <Input
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    placeholder="Enter your last name"
+                  />
+                </div>
+              </>
+            ) : (
+              <div>
+                <label>Business Name</label>
+                <Input
+                  value={bukaName}
+                  onChange={(e) => setBukaName(e.target.value)}
+                  placeholder="Enter your first name"
+                />
+              </div>
+            )}
             <div>
-              <abel>First Name</abel>
-              <Input
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                placeholder="Enter your first name"
-              />
-            </div>
-            <div>
-              <abel>Last Name</abel>
-              <Input
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-                placeholder="Enter your last name"
-              />
-            </div>
-            <div>
-              <abel>Email</abel>
+              <label>Email</label>
               <Input
                 type="email"
                 value={email}
@@ -82,7 +97,7 @@ export default function Register() {
               />
             </div>
             <div>
-              <abel>Password</abel>
+              <label>Password</label>
               <Input
                 type="password"
                 value={password}

@@ -5,7 +5,7 @@ import UserBar, { Navbar } from "@/components/bars/UserBar";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Buka Store",
+  title: "Dashboard",
   description:
     "This project is a full-stack application developed using Next.js, TypeScript, Tailwind CSS, Node.js, Express.js, MongoDB, and a payment gateway. It aims to provide a seamless food e-commerce experience.",
 };

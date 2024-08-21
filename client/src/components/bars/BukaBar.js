@@ -43,7 +43,7 @@ function UserBar() {
       <div className="flex h-full max-h-screen flex-col gap-2">
         <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
           <Link
-            href="/user"
+            href="/buka"
             className="flex items-center gap-2 font-semibold"
             prefetch={false}
           >
@@ -53,9 +53,9 @@ function UserBar() {
         <div className="flex-1">
           <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
             <Link
-              href="/user"
+              href="/buka"
               className={
-                path == "/user"
+                path == "/buka"
                   ? "flex items-center gap-3 rounded-lg bg-muted px-3 py-2 text-primary transition-all hover:text-primary"
                   : "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
               }
@@ -65,9 +65,9 @@ function UserBar() {
               Dashboard
             </Link>
             <Link
-              href="/user/orders"
+              href="/buka/orders"
               className={
-                path == "/user/orders"
+                path == "/buka/orders"
                   ? "flex items-center gap-3 rounded-lg bg-muted px-3 py-2 text-primary transition-all hover:text-primary"
                   : "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
               }
@@ -80,9 +80,9 @@ function UserBar() {
               </Badge> */}
             </Link>
             <Link
-              href="/user/settings"
+              href="/buka/settings"
               className={
-                path == "/user/settings"
+                path == "/buka/settings"
                   ? "flex items-center gap-3 rounded-lg bg-muted px-3 py-2 text-primary transition-all hover:text-primary"
                   : "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
               }
@@ -121,7 +121,7 @@ export const Navbar = () => {
               <img src="/buka-logo.png" width={100} height={100} />
             </Link>
             <Link
-              href="/user"
+              href="/buka"
               className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
               prefetch={false}
             >
@@ -139,7 +139,7 @@ export const Navbar = () => {
             </Link>
 
             <Link
-              href="/user/settings"
+              href="/buka/settings"
               className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
               prefetch={false}
             >

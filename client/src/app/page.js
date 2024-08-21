@@ -3,9 +3,10 @@ import Hero from "@/components/Hero";
 import ProductCarousel from "@/components/ProductCarousel";
 
 export default function Home() {
+  
   return (
     <main className="">
-      <Navbar />
+    
       <Hero />
 
       <div className=" mx-5">
