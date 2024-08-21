@@ -46,7 +46,7 @@ export default function ProductCarousel({ header }) {
                     <div className="text-primary font-semibold">
                       {product?.price}
                     </div>
-                    <Link href={`/cuisine-details/2`}>
+                    <Link href={`/cuisine-details/${product?._id}`}>
                       <Button>
                         View Cuisine
                       </Button>

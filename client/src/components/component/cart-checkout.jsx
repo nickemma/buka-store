@@ -51,7 +51,7 @@ export function CartCheckout() {
             ) : (
               carts?.map((item) => (
                 <div
-                  key={item.id}
+                  key={item._id}
                   className="flex items-center justify-between gap-4"
                 >
                   <div className="flex items-center gap-4">
@@ -64,7 +64,7 @@ export function CartCheckout() {
                       style={{ aspectRatio: "64/64", objectFit: "cover" }}
                     />
                     <div>
-                      <h3 className="font-medium">{item.name}</h3>
+                      <h3 className="font-medium">{item.cuisine_name}</h3>
                       <p className="text-muted-foreground">
                         ${item.price.toFixed(2)} x {item.quantity}
                       </p>
@@ -73,7 +73,7 @@ export function CartCheckout() {
                           disabled={item?.quantity <= 0 && true}
                           className=""
                           onClick={() => {
-                            handleDecrement(item?.id);
+                            handleDecrement(item?._id);
                           }}
                         >
                           <MinusCircle size={"20"} />
@@ -83,7 +83,7 @@ export function CartCheckout() {
                         </h3>
                         <button
                           onClick={() => {
-                            handleIncrement(item?.id);
+                            handleIncrement(item?._id);
                           }}
                           className=""
                         >
