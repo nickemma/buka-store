@@ -14,6 +14,7 @@ import userRouter from './routes/user_routes';
 import bukaRoutes from './routes/buka_owner_routes';
 import cuisineRoutes from './routes/cuisine_routes';
 import orderRoutes from './routes/order_routes';
+import adminRoutes from './routes/admin_routes';
 
 const app = express();
 
@@ -39,6 +40,7 @@ app.use('/api/users', userRouter);
 app.use('/api/bukas', bukaRoutes);
 app.use('/api/cuisines', cuisineRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/admin', adminRoutes);
 
 //============= Swagger UI Docs
 const options = {

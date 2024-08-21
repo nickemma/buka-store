@@ -11,8 +11,8 @@ import jwt, { Secret } from 'jsonwebtoken';
 const secretKey = process.env.JWT_SECRET;
 const tokenExpiration = process.env.NODE_ENV === 'development' ? '1d' : '7d';
 
-const generateToken = (id: string) => {
-  return jwt.sign({ id }, secretKey as Secret, {
+const generateToken = (user: { _id: string; role: string }) => {
+  return jwt.sign( { id: user._id, role: user.role }, secretKey as Secret, {
     expiresIn: tokenExpiration,
   });
 };
@@ -47,7 +47,8 @@ export const registerBuka = async (req: Request, res: Response) => {
     });
 
     // Convert ObjectId to string
-    const token = generateToken(newBuka._id.toString());
+    const token = generateToken({ _id: newBuka._id.toString(), role: newBuka.role });
+
 
     // Set the token in a cookie with the same name as the token
     res.cookie('token', token, {
@@ -99,7 +100,7 @@ export const loginBuka = async (req: Request, res: Response) => {
     }
 
     // Convert ObjectId to string
-    const token = generateToken(buka._id.toString());
+    const token = generateToken({ _id: buka._id.toString(), role: buka.role });
 
     // Set the token in a cookie with the same name as the token
     res.cookie('token', token, {

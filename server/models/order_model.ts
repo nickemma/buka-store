@@ -45,7 +45,7 @@ const OrderSchema = new mongoose.Schema({
     type: Date,
     required: [true, 'Please enter the ready date'],
   },
-  payment_method: {
+  is_paid: {
     type: String,
     required: [true, 'Please enter the payment method'],
   },

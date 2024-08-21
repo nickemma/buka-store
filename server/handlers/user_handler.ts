@@ -12,8 +12,8 @@ import AuthorizedRequest from '../types/request';
 const secretKey = process.env.JWT_SECRET;
 const tokenExpiration = process.env.NODE_ENV === 'development' ? '1d' : '7d';
 
-const generateToken = (id: string) => {
-  return jwt.sign({ id }, secretKey as Secret, {
+const generateToken = (user: { _id: string; role: string }) => {
+  return jwt.sign( { id: user._id, role: user.role }, secretKey as Secret, {
     expiresIn: tokenExpiration,
   });
 };
@@ -26,7 +26,7 @@ const generateToken = (id: string) => {
 
 export const getUser = async (req: AuthorizedRequest<any>, res: Response) => {
   try {
-    const user = await User.findById(req.user).select('-password');
+    const user = await User.findById(req?.user?.id).select('-password');
     if (user) {
       const { _id, first_name, last_name, email, image, phone } = user;
       res.status(200).json({ _id, first_name, last_name, email, image, phone });
@@ -34,6 +34,7 @@ export const getUser = async (req: AuthorizedRequest<any>, res: Response) => {
       res.status(400).json({ message: 'User not found' });
     }
   } catch (error: any) {
+    console.log("error", error);
     res.status(500).json({ message: 'Something went wrong. Please try again...' });
   }
 };
@@ -77,8 +78,9 @@ export const register = async (req: Request, res: Response) => {
       role: role || 'user',
     });
 
-    // Convert ObjectId to string
-    const token = generateToken(newUser._id.toString());
+    // Generate token with user id and role
+    const token = generateToken({ _id: newUser._id.toString(), role: newUser.role });
+
 
     // Set the token in a cookie with the same name as the token
     res.cookie('token', token, {
@@ -139,21 +141,31 @@ export const login = async (req: Request, res: Response) => {
     }
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
-    // Convert ObjectId to string
-    const token = generateToken(user._id.toString());
-    // Set the token in a cookie with the same name as the token
-    res.cookie('token', token, {
-      path: '/',
-      httpOnly: true,
-      expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 1 day
-      sameSite: 'none',
-      secure: true,
-    });
+    if (isPasswordValid) {
+      // Update the user's lastLogin field with the current date and time
+      user.lastLogin = new Date();
+      await user.save();
 
-    if (user && isPasswordValid) {
-      const { _id, first_name, last_name, email, image, phone } = user;
-      res.status(200).json({ message: 'User logged in successfully', user: { _id, first_name, last_name, email, image, phone, token } });
+      // Generate a token
+      const token = generateToken({ _id: user._id.toString(), role: user.role });
+
+      // Set the token in a cookie
+      res.cookie('token', token, {
+        path: '/',
+        httpOnly: true,
+        expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 1 day
+        sameSite: 'none',
+        secure: true,
+      });
+
+      // Extract relevant user details to send in the response
+      const { _id, first_name, last_name, email, image, phone, lastLogin } = user;
+      res.status(200).json({
+        message: 'User logged in successfully',
+        user: { _id, first_name, last_name, email, image, phone, lastLogin, token },
+      });
     } else {
+      // If the password is invalid
       res.status(400).json({ message: 'Invalid Email or Password' });
     }
   } catch (error: any) {
@@ -173,7 +185,7 @@ export const updateUser = async (
   res: Response
 ) => {
   try {
-    const user = await User.findById(req.user);
+    const user = await User.findById(req?.user?.id);
     if (user) {
       const { first_name, last_name, email, image, phone } = user;
       user.email = email;
@@ -213,7 +225,7 @@ export const changePassword = async (
   res: Response
 ) => {
   try {
-    const user = await User.findById(req.user);
+    const user = await User.findById(req.user?.id);
     const { password, oldPassword } = req.body;
     if (!user) {
       return res.status(400).json({ message: 'User not found, Sign-Up' });
