@@ -6,14 +6,15 @@ import { toast } from "sonner";
 
 import React from "react";
 const endpoint = "https://buka-store.vercel.app/api/cuisines";
-function useCuisine() {
+function useCuisine(id) {
   const [data, setData] = useState([]);
+  const [details, setSetails] = useState(null);
 
   useEffect(() => {
     const fetchCuisines = async () => {
       await axios
         .get(endpoint)
-        .then((res) =>setData(res.data) )
+        .then((res) => setData(res.data))
         .catch((err) => {
           toast.error(
             <div>
@@ -34,9 +35,32 @@ function useCuisine() {
     fetchCuisines();
   }, []);
 
-  
+  useEffect(() => {
+    const fetchCuisines = async () => {
+      await axios
+        .get(endpoint + "/" + id)
+        .then((res) => setSetails(res.data))
+        .catch((err) => {
+          toast.error(
+            <div>
+              {err.response.data.errors
+                ? err.response.data.errors.map((item) => item)
+                : err.response.data.message}
+            </div>,
+            {
+              action: {
+                label: "Close",
+                onClick: () => console.log("Undo"),
+              },
+            }
+          );
+        });
+    };
 
-  return {data}
+    fetchCuisines();
+  }, []);
+
+  return { data, details };
 }
 
 export default useCuisine;

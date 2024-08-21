@@ -4,16 +4,20 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { MinusIcon, PlusIcon, ShoppingCartIcon } from "lucide-react";
 import useCart from "@/components/hooks/useCart";
+import useCuisine from "@/components/hooks/useCuisine";
 
-export default function Details() {
+export default function Details({params}) {
   const [quantity, setQuantity] = useState(1);
   const [open, setOpen] = useState(false);
+  const {id}  = params
+  console.log(id)
 
   const incrementQuantity = () => setQuantity((prev) => prev + 1);
   const decrementQuantity = () =>
     setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
 
   const { handleAddToCart } = useCart(quantity, setQuantity, setOpen);
+  const { details } = useCuisine(id);
 
   const item = {
     id: 1,
@@ -38,12 +42,11 @@ export default function Details() {
             />
           </div>
           <CardContent className="p-6 md:w-1/2">
-            <h1 className="text-3xl font-bold mb-2">Delicious Pizza</h1>
+            <h1 className="text-3xl font-bold mb-2">{details?.cuisine_name}</h1>
             <p className="text-muted-foreground mb-4">
-              A mouthwatering pizza topped with fresh mozzarella, basil, and our
-              signature tomato sauce.
+            {details?.cuisine_owner?.buka_name}
             </p>
-            <div className="text-2xl font-bold mb-6">$12.99</div>
+            <div className="text-2xl font-bold mb-6">{details?.price}</div>
             <div className="flex items-center mb-6">
               <Button
                 variant="outline"
@@ -64,7 +67,7 @@ export default function Details() {
               </Button>
             </div>
             <Button
-              onClick={() => handleAddToCart(item)}
+              onClick={() => handleAddToCart(details)}
               className="w-full"
               size="lg"
             >

@@ -16,12 +16,12 @@ const useCart = (quantity, setQuantity, setOpen) => {
 
   const handleIncrement = (ticketId) => {
     const existingTicketIndex = carts.findIndex(
-      (cartTicket) => cartTicket.id === ticketId
+      (cartTicket) => cartTicket._id === ticketId
     );
 
     console.log(existingTicketIndex);
     const existingTicke = carts.findIndex(
-      (cartTicket) => cartTicket.id === ticketId
+      (cartTicket) => cartTicket._id === ticketId
     );
     if (existingTicketIndex !== -1) {
       const newCart = [...carts];
@@ -42,7 +42,7 @@ const useCart = (quantity, setQuantity, setOpen) => {
       setCookie("cart", newCart);
       router.refresh();
     } else {
-      const ticket = ticketing.find((ticket) => ticket.id === ticketId);
+      const ticket = ticketing.find((ticket) => ticket._id === ticketId);
       const tickett = [...ticketing];
       const ticketIndex = tickett[existingTicke];
       if (ticket) {
@@ -57,10 +57,10 @@ const useCart = (quantity, setQuantity, setOpen) => {
 
   const handleDecrement = (ticketId) => {
     const existingTicketIndex = carts.findIndex(
-      (cartTicket) => cartTicket.id === ticketId
+      (cartTicket) => cartTicket._id === ticketId
     );
     const existingTicke = carts.findIndex(
-      (cartTicket) => cartTicket.id === ticketId
+      (cartTicket) => cartTicket._id === ticketId
     );
     if (existingTicketIndex !== -1) {
       const tickett = [...carts];
@@ -79,7 +79,7 @@ const useCart = (quantity, setQuantity, setOpen) => {
   const handleAddToCart = (x) => {
     const cartJson = getCookie("cart");
     const carts = cartJson ? JSON.parse(cartJson) : "";
-    const existingCart = cart.find((cartItem) => cartItem?.id === x.id);
+    const existingCart = cart.find((cartItem) => cartItem?._id === x._id);
     if (!existingCart) {
       setCart([...carts, { ...x, quantity }]);
       setCookie("cart", JSON.stringify([...carts, { ...x, quantity }]));
