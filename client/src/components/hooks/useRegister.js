@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 const endpoint = "https://buka-store.vercel.app/api/users/";
+const buka_endpoint = "https://buka-store.vercel.app/api/bukas/";
 
 export const useRegister = (
   firstName,
@@ -15,7 +16,9 @@ export const useRegister = (
   phone,
   email,
   setLoading,
-  role
+  role,
+
+  bukaName
 ) => {
   const [disable, setDisable] = useState(true);
   const router = useRouter();
@@ -29,44 +32,148 @@ export const useRegister = (
   const handleRegister = async (e) => {
     e.preventDefault();
     setLoading(true);
-    try {
-      await axios
-        .post(endpoint + "signup", {
-          first_name: firstName,
-          last_name: lastName,
-          email: email,
-          password: password,
-          role: role,
-        }, {
-          withCredentials: true, 
-        })
-        .then((res) => {
-          setLoading(false);
-          toast.success(res?.data?.message, {
-            className: "bg-red-500",
+
+    const checkRole = role === "user" ? "user" : "buka";
+
+    if (role === "user") {
+      try {
+        if (!firstName || !lastName || !email || !password) {
+          toast.error("All fields are required", {
             action: {
               label: "Close",
               onClick: () => console.log("Undo"),
             },
           });
+          setLoading(false);
+        } else {
+          await axios
+            .post(
+              endpoint + "signup",
+              {
+                first_name: firstName,
+                last_name: lastName,
+                email: email,
+                password: password,
+                role: role,
+              },
+              {
+                withCredentials: true,
+              }
+            )
+            .then((res) => {
+              setLoading(false);
+              toast.success(res?.data?.message, {
+                action: {
+                  label: "Close",
+                  onClick: () => console.log("Undo"),
+                },
+              });
 
-          setCookie("user", JSON.stringify(res.data));
-          if (res.data?.user?.role == "user") {
-            router.push("/user");
-          } else {
-            router.push("/buka");
-          }
-          router.refresh();
+              console.log(res.data);
+
+              setCookie("user", JSON.stringify(res.data));
+              router.push("/");
+              router.refresh();
+            })
+            .catch((err) => {
+              console.log(err, "Catch eeror");
+              toast.error(
+                <div>
+                  {err.response.data.errors
+                    ? err.response.data.errors.map((item) => item)
+                    : err.response.data.message}
+                </div>,
+                {
+                  action: {
+                    label: "Close",
+                    onClick: () => console.log("Undo"),
+                  },
+                }
+              );
+              setLoading(false);
+            });
+        }
+      } catch (error) {
+        console.log(error, "Outside eeror");
+
+        setLoading(false);
+        toast.error(error.message, {
+          action: {
+            label: "Close",
+            onClick: () => console.log("Undo"),
+          },
         });
-    } catch (error) {
-      setLoading(false);
-      toast.error(error.message, {
-        className: "bg-red-500",
-        action: {
-          label: "Close",
-          onClick: () => console.log("Undo"),
-        },
-      });
+        setLoading(false);
+      }
+    } else {
+      try {
+        if (!bukaName || !email || !password) {
+          toast.error("All fields are required", {
+            action: {
+              label: "Close",
+              onClick: () => console.log("Undo"),
+            },
+          });
+          setLoading(false);
+        } else {
+          await axios
+            .post(
+              buka_endpoint + "register",
+              {
+                buka_name: bukaName,
+                email: email,
+                password: password,
+                role: role,
+              },
+              {
+                withCredentials: true,
+              }
+            )
+            .then((res) => {
+              setLoading(false);
+              toast.success(res?.data?.message, {
+                action: {
+                  label: "Close",
+                  onClick: () => console.log("Undo"),
+                },
+              });
+
+              console.log(res.data);
+
+              setCookie("user", JSON.stringify(res.data));
+              router.push("/buka");
+              router.refresh();
+            })
+            .catch((err) => {
+              console.log(err, "Catch eeror");
+              toast.error(
+                <div>
+                  {err.response.data.errors
+                    ? err.response.data.errors.map((item) => item)
+                    : err.response.data.message}
+                </div>,
+                {
+                  action: {
+                    label: "Close",
+                    onClick: () => console.log("Undo"),
+                  },
+                }
+              );
+              setLoading(false);
+            });
+        }
+      } catch (error) {
+        console.log(error, "Outside eeror");
+
+        setLoading(false);
+        toast.error(error.message, {
+          action: {
+            label: "Close",
+            onClick: () => console.log("Undo"),
+          },
+        });
+        setLoading(false);
+      }
     }
   };
   return { handleRegister };

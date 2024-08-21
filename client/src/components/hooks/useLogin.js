@@ -8,7 +8,6 @@ import { toast } from "sonner";
 
 const endpoint = "https://buka-store.vercel.app/api/users/";
 
-
 export const useLogin = (email, password, setLoading) => {
   const router = useRouter();
   const handleLogin = async (e) => {
@@ -32,12 +31,26 @@ export const useLogin = (email, password, setLoading) => {
             },
           });
           setCookie("user", JSON.stringify(res.data));
-          if (res.data?.user?.role == "user") {
-            router.push("/user");
-          } else {
-            router.push("/buka");
-          }
+          router.push("/");
           router.refresh();
+
+        })
+        .catch((err) => {
+          console.log(err, "Catch eeror");
+          toast.error(
+            <div>
+              {err.response.data.errors
+                ? err.response.data.errors.map((item) => item)
+                : err.response.data.message}
+            </div>,
+            {
+              action: {
+                label: "Close",
+                onClick: () => console.log("Undo"),
+              },
+            }
+          );
+          setLoading(false);
         });
     } catch (error) {
       setLoading(false);

@@ -9,58 +9,12 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import useCart from "@/components/hooks/useCart";
 import { Button } from "./ui/button";
+import Link from "next/link"
+import useCuisine from "@/components/hooks/useCuisine";
 
 export default function ProductCarousel({ header }) {
-  const data = [
-    {
-      id: 1,
-      image: "/placeholder.svg",
-      title: "Cozy Blanket",
-      price: "$29.99",
-    },
-    {
-      id: 2,
-      image: "/placeholder.svg",
-      title: "Autumn Mug",
-      price: "$12.99",
-    },
-    {
-      id: 3,
-      image: "/placeholder.svg",
-      title: "Fall Fragrance Candle",
-      price: "$16.99",
-    },
-    {
-      id: 4,
-      image: "/placeholder.svg",
-      title: "Autumn Leaves Wall Art",
-      price: "$39.99",
-    },
-    {
-      id: 5,
-      image: "/placeholder.svg",
-      title: "Fall Harvest Wreath",
-      price: "$49.99",
-    },
-    {
-      id: 6,
-      image: "/placeholder.svg",
-      title: "Spiced Apple Cider Syrup",
-      price: "$12.99",
-    },
-    {
-      id: 7,
-      image: "/placeholder.svg",
-      title: "Fall Foliage Table Runner",
-      price: "$19.99",
-    },
-    {
-      id: 8,
-      image: "/placeholder.svg",
-      title: "Fall Fashion Hat",
-      price: "$24.99",
-    },
-  ];
+  const { data } = useCuisine();
+ 
 
   // const { handleAddToCart, handleDecrement, handleIncrement, cart } = useCart(data);
   return (
@@ -70,29 +24,33 @@ export default function ProductCarousel({ header }) {
         <CarouselContent>
           {data.map((product) => (
             <CarouselItem
-              key={product.id}
+              key={product?._id}
               className="basis-1/1 md:basis-1/3 lg:basis-1/4"
             >
               <div className="p-4">
                 <Card>
                   <img
-                    src="/food2-buka.png"
-                    alt={product.title}
+                    src={"/food2-buka.png"}
+                    alt={product?.title}
                     width={300}
                     height={300}
                     className="aspect-square object-cover rounded-md"
                   />
                   <CardContent className="p-4">
                     <h3 className="font-semibold text-[1rem]">
-                      {product.title}
+                      {product?.cuisine_name}
                     </h3>
                     <h3 className="font-semibold text-[0.6rem]">
-                      {product.title}
+                      {product?.cuisine_owner?.buka_name}
                     </h3>
                     <div className="text-primary font-semibold">
-                      {product.price}
+                      {product?.price}
                     </div>
-
+                    <Link href={`/cuisine-details/2`}>
+                      <Button>
+                        View Cuisine
+                      </Button>
+                    </Link>
                   </CardContent>
                 </Card>
               </div>

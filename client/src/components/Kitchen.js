@@ -53,10 +53,8 @@ function Kitchen() {
       price: 16.99,
     },
   ];
-  
 
   const handleCart = (data) => {
- 
     console.log({
       ...data,
       quantity,
@@ -107,7 +105,7 @@ function Kitchen() {
           <h1 className="text-xl font-bold">Your Cart</h1>
 
           <div className="flex flex-col gap-2 mt-3">
-          <RadioGroup
+            <RadioGroup
               onValueChange={(value) => setRole(value)}
               defaultValue="user"
               className="flex flex-col"
@@ -126,7 +124,7 @@ function Kitchen() {
         <div className="border rounded-md p-3">
           <h1 className="text-xl font-bold">Filter</h1>
           <div className="space-y-4">
-          {items.map((item) => (
+            {items.map((item) => (
               <div
                 key={item.id}
                 className="flex items-center justify-between gap-4"
@@ -142,14 +140,19 @@ function Kitchen() {
                   />
                   <div>
                     <h3 className="text-[0.7rem] font-bold">{item.name}</h3>
-                    <p className="text-muted-foreground text-[0.7rem]">
-                      ${item.price.toFixed(2)} x {item.quantity}
-                    </p>
-                    <p className="font-medium">
-                      ${(item.price * item.quantity).toFixed(2)}
-                    </p>
+                    <p className="text-muted-foreground text-[0.7rem]"></p>
+                    <p className="font-medium">${item.price.toFixed(2)}</p>
                   </div>
                 </div>
+
+                <Button
+                  onClick={() => {
+                    setOpen(true);
+                    setSelected(item);
+                  }}
+                >
+                  <PlusCircle />
+                </Button>
               </div>
             ))}
           </div>{" "}
@@ -165,33 +168,33 @@ function Kitchen() {
                 ${selected?.price}
               </h3>
               <div>
-                      <div className="flex items-center justify-center gap-3">
-                        <button
-                          disabled={quantity <= 0 && true}
-                          className=""
-                          onClick={() => {
-                            if (quantity <= 0) {
-                              setQuantity(0);
-                            } else {
-                              setQuantity((pre) => (pre -= 1));
-                            }
-                          }}
-                        >
-                          <MinusCircle size={"20"} />
-                        </button>
-                        <h3 className="text-[1rem] font-bold text-primary">
-                          {quantity}
-                        </h3>
-                        <button
-                          onClick={() => {
-                            setQuantity((pre) => (pre += 1));
-                          }}
-                          className=""
-                        >
-                          <PlusCircle size={"20"} />
-                        </button>
-                      </div>
-                    </div>
+                <div className="flex items-center justify-center gap-3">
+                  <button
+                    disabled={quantity <= 0 && true}
+                    className=""
+                    onClick={() => {
+                      if (quantity <= 0) {
+                        setQuantity(0);
+                      } else {
+                        setQuantity((pre) => (pre -= 1));
+                      }
+                    }}
+                  >
+                    <MinusCircle size={"20"} />
+                  </button>
+                  <h3 className="text-[1rem] font-bold text-primary">
+                    {quantity}
+                  </h3>
+                  <button
+                    onClick={() => {
+                      setQuantity((pre) => (pre += 1));
+                    }}
+                    className=""
+                  >
+                    <PlusCircle size={"20"} />
+                  </button>
+                </div>
+              </div>
 
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>

@@ -16,7 +16,6 @@ export default function Login() {
 
   return (
     <section className="h-screen flex justify-center items-center">
-    
       <div className=" h-full w-full flex justify-center items-center  ">
         <div className="bg-white w-full md:w-[500px]  rounded-md px-5 py-7">
           <img src="/buka-logo.png" width="200" height="200" />
@@ -34,7 +33,8 @@ export default function Login() {
             <div>
               <abel>Password</abel>
               <Input
-                placeholder="Enter your full name"
+                type="password"
+                placeholder="Enter your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
