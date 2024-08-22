@@ -79,7 +79,7 @@ export function CartCheckout({ id }) {
       .post(endpoint + "/create", orderDetails, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YzUxODkzMTc4ZDUzNjRhMjk5ZDJiYyIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzI0MzE2MTI4LCJleHAiOjE3MjQ5MjA5Mjh9.WfG0WpImwa6uOkZe1kYGH8Nu2i3QZ-MGvccDeaezd2k",
+          Authorization: "Bearer " + data?.token,
         },
       })
       .then((res) => {
@@ -98,9 +98,9 @@ export function CartCheckout({ id }) {
         console.log(err, "Catch eeror");
         toast.error(
           <div>
-            {err.response.data.errors
-              ? err.response.data.errors.map((item) => item)
-              : err.response.data.message}
+            {err?.response.data.errors
+              ? err?.response.data.errors.map((item) => item)
+              : err?.response.data.message}
           </div>,
           {
             action: {

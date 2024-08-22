@@ -15,32 +15,24 @@ function useCuisine(id) {
       await axios
         .get(endpoint)
         .then((res) => setData(res.data))
-        .catch((err) => {
-        
-        });
+        .catch((err) => {});
     };
 
     fetchCuisines();
   }, []);
 
-  console.log(data)
+  console.log(data);
 
-  if(id) {
-    useEffect(() => {
-        const fetchCuisines = async () => {
-          await axios
-            .get(endpoint + "/" + id)
-            .then((res) => setSetails(res.data))
-            .catch((err) => {
-      
-            });
-        };
-    
-        fetchCuisines();
-      }, []);
-  }
+  useEffect(() => {
+    const fetchCuisines = async () => {
+      await axios
+        .get(endpoint + "/" + id)
+        .then((res) => setSetails(res.data))
+        .catch((err) => {});
+    };
 
-  
+    fetchCuisines();
+  }, []);
 
   return { data, details };
 }
