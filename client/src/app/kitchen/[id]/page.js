@@ -1,10 +1,11 @@
 import Kitchen from "@/components/Kitchen";
 import React from "react";
 
-function page() {
+function page({params}) {
+  const {id} = params
   return (
     <div>
-      <Kitchen />
+      <Kitchen id={id}/>
     </div>
   );
 }

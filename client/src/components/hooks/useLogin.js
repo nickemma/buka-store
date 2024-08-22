@@ -24,7 +24,6 @@ export const useLogin = (email, password, setLoading) => {
           setLoading(false);
           console.log(res.data);
           toast.success("Login successfully", {
-            className: "bg-red-500",
             action: {
               label: "Close",
               onClick: () => console.log("Undo"),

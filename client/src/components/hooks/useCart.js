@@ -83,7 +83,7 @@ const useCart = (quantity, setQuantity, setOpen) => {
     if (!existingCart) {
       setCart([...carts, { ...x, quantity }]);
       setCookie("cart", JSON.stringify([...carts, { ...x, quantity }]));
-      toast.success(`${quantity} of ${x?.name}add to cart`, {
+      toast.success(`${quantity} of ${x?.cuisine_name} add to cart`, {
         action: {
           label: "Close",
           onClick: () => console.log("Undo"),

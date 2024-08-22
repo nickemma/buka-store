@@ -2,27 +2,20 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { getCookie } from "cookies-next";
+import axios from "axios";
+import { getCookie, setCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import PuffLoader from "react-spinners/PuffLoader";
+import { toast } from "sonner";
+const endpoint = "https://buka-store.vercel.app/api/users/";
 
 function Settings() {
-  const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const cookie = getCookie("user");
   const myData = cookie ? JSON.parse(cookie) : "";
   const router = useRouter();
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const x = await client.fetch(`*[_type == "session_type" ]`);
-      setData(data?.background);
-    };
-
-    fetchData();
-  }, []);
-
+  const [data, setData] = useState(myData?.user);
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -33,8 +26,60 @@ function Settings() {
       ...prevState,
       [fieldName]: value,
     }));
+  };
 
-    console.log(formData);
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      await axios
+        .patch(endpoint + "updateuser", data, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + data?.token,
+          },
+        })
+        .then((res) => {
+          setLoading(false);
+          console.log(res.data);
+          toast.success("Update successfully", {
+            action: {
+              label: "Close",
+              onClick: () => console.log("Undo"),
+            },
+          });
+          setCookie("user", JSON.stringify(res.data));
+          router.push("/");
+          router.refresh();
+        })
+        .catch((err) => {
+          console.log(err, "Catch eeror");
+          toast.error(
+            <div>
+              {err.response.data.errors
+                ? err.response.data.errors.map((item) => item)
+                : err.response.data.message}
+            </div>,
+            {
+              action: {
+                label: "Close",
+                onClick: () => console.log("Undo"),
+              },
+            }
+          );
+          setLoading(false);
+        });
+    } catch (error) {
+      setLoading(false);
+      toast.error(error.message, {
+        className: "bg-red-500",
+        action: {
+          label: "Close",
+          onClick: () => console.log("Undo"),
+        },
+      });
+    }
   };
 
   return (
@@ -54,7 +99,7 @@ function Settings() {
                     First Name
                   </abel>
                   <Input
-                    value={data?.years_of_experience}
+                    value={data?.first_name}
                     onChange={(e) => valueChange("first_name", e.target.value)}
                     placeholder="First Name"
                   />
@@ -62,16 +107,27 @@ function Settings() {
                 <div>
                   <abel className="text-[0.8rem] font-semibold">Last Name</abel>
                   <Input
-                    value={data?.professional_school}
+                    value={data?.last_name}
                     onChange={(e) => valueChange("last_name", e.target.value)}
                     placeholder="Last Name"
+                  />
+                </div>
+                <div>
+                  <abel className="text-[0.8rem] font-semibold">
+                    Phone Number
+                  </abel>
+
+                  <Input
+                    value={data?.phone}
+                    onChange={(e) => valueChange("phone", e.target.value)}
+                    placeholder="Enter phone number"
                   />
                 </div>
                 <div>
                   <abel className="text-[0.8rem] font-semibold">Email</abel>
 
                   <Input
-                    value={data?.date_of_graduation}
+                    value={data?.email}
                     onChange={(e) => valueChange("email", e.target.value)}
                     placeholder="Email"
                   />
@@ -79,7 +135,7 @@ function Settings() {
               </div>
 
               <div className="mt-5 m-auto flex justify-center">
-                <Button onClick={handleSubmit} className="w-full md:w-40">
+                <Button onClick={handleUpdate} className="w-full md:w-40">
                   {loading ? <PuffLoader size={20} /> : "Next"}
                 </Button>
               </div>

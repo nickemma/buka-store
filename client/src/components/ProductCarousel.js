@@ -9,12 +9,11 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import useCart from "@/components/hooks/useCart";
 import { Button } from "./ui/button";
-import Link from "next/link"
+import Link from "next/link";
 import useCuisine from "@/components/hooks/useCuisine";
 
 export default function ProductCarousel({ header }) {
   const { data } = useCuisine();
- 
 
   // const { handleAddToCart, handleDecrement, handleIncrement, cart } = useCart(data);
   return (
@@ -46,10 +45,8 @@ export default function ProductCarousel({ header }) {
                     <div className="text-primary font-semibold">
                       {product?.price}
                     </div>
-                    <Link href={`/cuisine-details/${product?._id}`}>
-                      <Button>
-                        View Cuisine
-                      </Button>
+                    <Link href={`/kitchen/${product?.cuisine_owner._id}`}>
+                      <Button>View Cuisine</Button>
                     </Link>
                   </CardContent>
                 </Card>

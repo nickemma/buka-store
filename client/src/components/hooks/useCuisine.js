@@ -23,18 +23,24 @@ function useCuisine(id) {
     fetchCuisines();
   }, []);
 
-  useEffect(() => {
-    const fetchCuisines = async () => {
-      await axios
-        .get(endpoint + "/" + id)
-        .then((res) => setSetails(res.data))
-        .catch((err) => {
-  
-        });
-    };
+  console.log(data)
 
-    fetchCuisines();
-  }, []);
+  if(id) {
+    useEffect(() => {
+        const fetchCuisines = async () => {
+          await axios
+            .get(endpoint + "/" + id)
+            .then((res) => setSetails(res.data))
+            .catch((err) => {
+      
+            });
+        };
+    
+        fetchCuisines();
+      }, []);
+  }
+
+  
 
   return { data, details };
 }

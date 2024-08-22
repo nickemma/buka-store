@@ -19,11 +19,7 @@ export default function Details({params}) {
   const { handleAddToCart } = useCart(quantity, setQuantity, setOpen);
   const { details } = useCuisine(id);
 
-  const item = {
-    id: 1,
-    name: "Cozy Blanket",
-    price: 29.99,
-  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <Card className="overflow-hidden">
