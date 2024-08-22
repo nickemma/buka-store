@@ -69,8 +69,8 @@ export function CartCheckout({ id }) {
       order_status: "PENDING",
       order_total: total,
       order_owner: userData?._id,
-      order_buka: id,
-      payment_method: "true",
+      order_buka: "66c63c47697c1a8a9a648352",
+      is_paid: "true",
       delivery_date: Date.now(),
     };
     setLoading(true);
@@ -79,7 +79,7 @@ export function CartCheckout({ id }) {
       .post(endpoint + "/create", orderDetails, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer " + data?.token,
+          Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YzUxODkzMTc4ZDUzNjRhMjk5ZDJiYyIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzI0MzE2MTI4LCJleHAiOjE3MjQ5MjA5Mjh9.WfG0WpImwa6uOkZe1kYGH8Nu2i3QZ-MGvccDeaezd2k",
         },
       })
       .then((res) => {
