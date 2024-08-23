@@ -80,12 +80,19 @@ const Navbar = () => {
             </DropdownMenuContent>
           </DropdownMenu>
         ) : (
-          <div>
+          <div className="flex gap-2">
+          <Link
+            href="/register"
+            variant="outline"
+            className="bg-green-500  w-[100px] h-[30px] flex justify-center items-center rounded md text-sm text-black   "
+          >
+            Regiser
+          </Link>
             <Link
-              href="/register"
+              href="/login"
               className="bg-green-500 w-[100px] h-[30px] flex justify-center items-center rounded md text-sm text-black   "
             >
-              Regiser
+              Login
             </Link>
           </div>
         )}

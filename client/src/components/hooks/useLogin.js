@@ -29,10 +29,14 @@ export const useLogin = (email, password, setLoading) => {
               onClick: () => console.log("Undo"),
             },
           });
-          setCookie("user", JSON.stringify(res.data));
+          setCookie(
+            "user",
+            JSON.stringify({
+              user: res.data.user,
+            })
+          );
           router.push("/");
           router.refresh();
-
         })
         .catch((err) => {
           console.log(err, "Catch eeror");
