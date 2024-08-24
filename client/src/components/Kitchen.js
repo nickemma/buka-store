@@ -30,29 +30,21 @@ import { useState } from "react";
 import { toast } from "sonner";
 import useCart from "./hooks/useCart";
 import { Label } from "@radix-ui/react-label";
-function Kitchen() {
+import { getCookie } from "cookies-next";
+import useCuisine from "./hooks/useCuisine";
+function Kitchen({ id }) {
   const [quantity, setQuantity] = useState(1);
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState();
-  const [role, setRole] = useState("");
 
-  const items = [
-    {
-      id: 1,
-      name: "Cozy Blanket",
-      price: 29.99,
-    },
-    {
-      id: 2,
-      name: "Autumn Mug",
-      price: 12.99,
-    },
-    {
-      id: 3,
-      name: "Fall Fragrance Candle",
-      price: 16.99,
-    },
-  ];
+  const [role, setRole] = useState("");
+  const cartJson = getCookie("cart");
+  const carts = cartJson ? JSON.parse(cartJson) : [];
+
+  const total = carts?.reduce(
+    (acc, item) => acc + item.price * item.quantity,
+    0
+  );
 
   const handleCart = (data) => {
     console.log({
@@ -70,7 +62,12 @@ function Kitchen() {
     setOpen(false);
   };
 
-  const { handleAddToCart } = useCart(quantity, setQuantity, setOpen);
+  const { data } = useCuisine();
+  const { handleAddToCart, handleDecrement, handleIncrement } = useCart(
+    quantity,
+    setQuantity,
+    setOpen
+  );
 
   return (
     <div className="px-3">
@@ -102,7 +99,7 @@ function Kitchen() {
       </div>
       <div className="grid md:grid-cols-3 my-14 gap-3 ">
         <div className="border rounded-md  p-3">
-          <h1 className="text-xl font-bold">Your Cart</h1>
+          <h1 className="text-xl font-bold">Filter Category</h1>
 
           <div className="flex flex-col gap-2 mt-3">
             <RadioGroup
@@ -122,39 +119,43 @@ function Kitchen() {
           </div>
         </div>
         <div className="border rounded-md p-3">
-          <h1 className="text-xl font-bold">Filter</h1>
+          <h1 className="text-xl font-bold">Cuisines</h1>
           <div className="space-y-4">
-            {items.map((item) => (
-              <div
-                key={item.id}
-                className="flex items-center justify-between gap-4"
-              >
-                <div className="flex items-center gap-4">
-                  <img
-                    src="/food-buka.png"
-                    alt={item.name}
-                    width={50}
-                    height={50}
-                    className="rounded-md object-cover"
-                    style={{ aspectRatio: "64/64", objectFit: "cover" }}
-                  />
-                  <div>
-                    <h3 className="text-[0.7rem] font-bold">{item.name}</h3>
-                    <p className="text-muted-foreground text-[0.7rem]"></p>
-                    <p className="font-medium">${item.price.toFixed(2)}</p>
-                  </div>
-                </div>
-
-                <Button
-                  onClick={() => {
-                    setOpen(true);
-                    setSelected(item);
-                  }}
+            {data
+              .filter((x) => x?.cuisine_owner?._id === id)
+              .map((item) => (
+                <div
+                  key={item?._id}
+                  className="flex items-center justify-between gap-4"
                 >
-                  <PlusCircle />
-                </Button>
-              </div>
-            ))}
+                  <div className="flex items-center gap-4">
+                    <img
+                      src="/food-buka.png"
+                      alt={item?.cuisine_name}
+                      width={50}
+                      height={50}
+                      className="rounded-md object-cover"
+                      style={{ aspectRatio: "64/64", objectFit: "cover" }}
+                    />
+                    <div>
+                      <h3 className="text-[0.7rem] font-bold">
+                        {item?.cuisine_name}
+                      </h3>
+                      <p className="text-muted-foreground text-[0.7rem]"></p>
+                      <p className="font-medium">${item?.price.toFixed(2)}</p>
+                    </div>
+                  </div>
+
+                  <Button
+                    onClick={() => {
+                      setOpen(true);
+                      setSelected(item);
+                    }}
+                  >
+                    <PlusCircle />
+                  </Button>
+                </div>
+              ))}
           </div>{" "}
           <AlertDialog open={open} onOpenChange={setOpen}>
             <AlertDialogContent className="text-center">
@@ -209,7 +210,78 @@ function Kitchen() {
             </AlertDialogContent>
           </AlertDialog>
         </div>
-        <div className="border rounded-md">hello</div>
+        <div className="border rounded-md p-3">
+          <div className="space-y-6">
+            <h1 className="text-xl font-bold">Your Cart</h1>
+            <div className="space-y-4">
+              {carts?.length <= 0 ? (
+                <div className="h-[150px] flex flex-col items-center justify-center">
+                  <h2 className="text-lg font-bold text-primary">
+                    Your Cart is Empty
+                  </h2>
+                </div>
+              ) : (
+                carts?.map((item) => (
+                  <div
+                    key={item._id}
+                    className="flex items-center justify-between gap-4"
+                  >
+                    <div className="flex items-center gap-4">
+                      <img
+                        src="/placeholder.svg"
+                        alt={item.name}
+                        width={56}
+                        height={56}
+                        className="rounded-md object-cover"
+                        style={{ aspectRatio: "64/64", objectFit: "cover" }}
+                      />
+                      <div>
+                        <h3 className="font-medium text-[0.7rem] ">
+                          {item.cuisine_name}
+                        </h3>
+                        <p className="text-muted-foreground ">
+                          ${item.price.toFixed(2)} x {item.quantity}
+                        </p>
+                        <div className="flex items-center  gap-3">
+                          <button
+                            disabled={item?.quantity <= 0 && true}
+                            className=""
+                            onClick={() => {
+                              handleDecrement(item?._id);
+                            }}
+                          >
+                            <MinusCircle size={"20"} />
+                          </button>
+                          <h3 className="text-[1rem] font-bold text-primary">
+                            {item?.quantity}
+                          </h3>
+                          <button
+                            onClick={() => {
+                              handleIncrement(item?._id);
+                            }}
+                            className=""
+                          >
+                            <PlusCircle size={"20"} />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <p className="font-medium text-[0.8rem]">
+                      ${(item.price * item.quantity).toFixed(2)}
+                    </p>
+                  </div>
+                ))
+              )}
+            </div>
+            <div className="flex items-center justify-between">
+              <p className="text-lg font-medium">Total</p>
+              <p className="text-xl font-bold">${total.toFixed(2)}</p>
+            </div>
+            <Link href={`/kitchen/${id}/cart-checkout`}>
+              <Button className="w-full">Checkout</Button>
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   );

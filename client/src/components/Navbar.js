@@ -2,7 +2,7 @@
 
 import { Search, ShoppingCart, CircleUserIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { getCookie } from "cookies-next";
+import { deleteCookie, getCookie } from "cookies-next";
 import useCookie from "@/components/hooks/useCookie";
 import Link from "next/link";
 import {
@@ -13,11 +13,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useRouter } from "next/navigation";
 const Navbar = () => {
   const cartJson = getCookie("cart");
   const cartLength = cartJson ? JSON.parse(cartJson) : "";
   const { cookiesData } = useCookie();
-
+  const router = useRouter();
   console.log(cookiesData);
   return (
     <div className="flex justify-between items-center px-3 py-4 ">
@@ -48,21 +49,50 @@ const Navbar = () => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuLabel>
+                <Link href={cookiesData?.user?.first_name ? "/user" : "/buka"}>
+                  My Account
+                </Link>
+              </DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Settings</DropdownMenuItem>
-              <DropdownMenuItem>Support</DropdownMenuItem>
+              <DropdownMenuItem>
+                {" "}
+                <Link
+                  href={
+                    cookiesData?.user?.first_name
+                      ? "/user/settings"
+                      : "/buka/settings"
+                  }
+                >
+                  Settings
+                </Link>
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Logout</DropdownMenuItem>
+              <DropdownMenuItem
+                className="text-red-600 hover:text-red-600"
+                onClick={() => {
+                  deleteCookie("user");
+                  router.refresh();
+                }}
+              >
+                Logout
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         ) : (
-          <div>
+          <div className="flex gap-2">
+          <Link
+            href="/register"
+            variant="outline"
+            className="bg-green-500  w-[100px] h-[30px] flex justify-center items-center rounded md text-sm text-black   "
+          >
+            Regiser
+          </Link>
             <Link
-              href="/register"
+              href="/login"
               className="bg-green-500 w-[100px] h-[30px] flex justify-center items-center rounded md text-sm text-black   "
             >
-              Regiser
+              Login
             </Link>
           </div>
         )}

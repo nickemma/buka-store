@@ -15,22 +15,20 @@ function useCuisine(id) {
       await axios
         .get(endpoint)
         .then((res) => setData(res.data))
-        .catch((err) => {
-        
-        });
+        .catch((err) => {});
     };
 
     fetchCuisines();
   }, []);
+
+  console.log(data);
 
   useEffect(() => {
     const fetchCuisines = async () => {
       await axios
         .get(endpoint + "/" + id)
         .then((res) => setSetails(res.data))
-        .catch((err) => {
-  
-        });
+        .catch((err) => {});
     };
 
     fetchCuisines();

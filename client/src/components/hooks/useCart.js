@@ -81,9 +81,30 @@ const useCart = (quantity, setQuantity, setOpen) => {
     const carts = cartJson ? JSON.parse(cartJson) : "";
     const existingCart = cart.find((cartItem) => cartItem?._id === x._id);
     if (!existingCart) {
-      setCart([...carts, { ...x, quantity }]);
-      setCookie("cart", JSON.stringify([...carts, { ...x, quantity }]));
-      toast.success(`${quantity} of ${x?.name}add to cart`, {
+      setCart([
+        ...carts,
+        {
+          _id: x._id,
+          cuisine_name: x.cuisine_name,
+          quantity,
+          price: x.price,
+          image: x.image,
+        },
+      ]);
+      setCookie(
+        "cart",
+        JSON.stringify([
+          ...carts,
+          {
+            _id: x._id,
+            cuisine_name: x.cuisine_name,
+            quantity,
+            price: x.price,
+            image: x.image,
+          },
+        ])
+      );
+      toast.success(`${quantity} of ${x?.cuisine_name} add to cart`, {
         action: {
           label: "Close",
           onClick: () => console.log("Undo"),
