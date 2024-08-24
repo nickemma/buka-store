@@ -60,6 +60,7 @@ import {
   deleteCuisine,
 } from '../handlers/cuisine_handler';
 import {protect} from '../middleware/auth';
+import upload from '../middleware/multer';
 
 const router = express.Router();
 
@@ -83,7 +84,10 @@ const router = express.Router();
  *       400:
  *         description: Bad request
  */
-router.post('/', protect, createCuisine);
+// router.post('/', protect, createCuisine);
+ 
+// Route for creating cuisine with image upload
+router.post('/', protect, upload.single('image'), createCuisine);
 
 /**
  * @swagger

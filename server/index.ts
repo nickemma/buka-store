@@ -41,7 +41,7 @@ app.use('/api/bukas', bukaRoutes);
 app.use('/api/cuisines', cuisineRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/admin', adminRoutes);
-
+app.use('/uploads', express.static('uploads'));
 //============= Swagger UI Docs
 const options = {
   definition: {
