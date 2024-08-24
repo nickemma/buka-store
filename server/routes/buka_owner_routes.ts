@@ -90,8 +90,8 @@
  */
 
 import express from 'express';
-import { registerBuka, loginBuka, getSingleBuka, updateBuka } from '../handlers/buka_owner_handler';
-import protect from '../middleware/auth';
+import { registerBuka, loginBuka, getSingleBuka, updateBuka, getAllBukas } from '../handlers/buka_owner_handler';
+import {protect} from '../middleware/auth';
 
 const router = express.Router();
 
@@ -203,5 +203,74 @@ router.get('/:id', protect, getSingleBuka);
  */
 router.put('/:id', protect, updateBuka);
 
+/**
+ * @swagger
+ * /api/bukas:
+ *   get:
+ *     summary: Get all Bukas
+ *     tags: [Bukas]
+ *     responses:
+ *       200:
+ *         description: List of all Bukas
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Buka'
+ *       500:
+ *         description: Internal server error
+ */
+router.get('/', protect, getAllBukas);
+
 export default router;
+
+// /**
+//  * @swagger
+//  * /api/bukas:
+//  *   get:
+//  *     summary: Get all Bukas with pagination
+//  *     tags: [Bukas]
+//  *     parameters:
+//  *       - in: query
+//  *         name: page
+//  *         schema:
+//  *           type: integer
+//  *           default: 1
+//  *         description: The page number for pagination
+//  *       - in: query
+//  *         name: limit
+//  *         schema:
+//  *           type: integer
+//  *           default: 10
+//  *         description: The number of Bukas to retrieve per page
+//  *     responses:
+//  *       200:
+//  *         description: List of all Bukas with pagination details
+//  *         content:
+//  *           application/json:
+//  *             schema:
+//  *               type: object
+//  *               properties:
+//  *                 bukas:
+//  *                   type: array
+//  *                   items:
+//  *                     $ref: '#/components/schemas/Buka'
+//  *                 total:
+//  *                   type: integer
+//  *                   description: The total number of Bukas
+//  *                   example: 100
+//  *                 page:
+//  *                   type: integer
+//  *                   description: The current page number
+//  *                   example: 1
+//  *                 limit:
+//  *                   type: integer
+//  *                   description: The number of Bukas per page
+//  *                   example: 10
+//  *       500:
+//  *         description: Internal server error
+//  */
+
+
 

@@ -50,7 +50,7 @@ import {
   updateUser,
   changePassword,
 } from '../handlers/user_handler';
-import protect from '../middleware/auth';
+import {protect} from '../middleware/auth';
 
 const router = express.Router();
 /**

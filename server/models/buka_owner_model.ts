@@ -2,10 +2,13 @@ import mongoose, { InferSchemaType } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
 const OpeningHoursSchema = new mongoose.Schema({
-  start: {
+  day: {
     type: String,
   },
-  end: {
+  openingTime: {
+    type: String,
+  },
+  closingTime: {
     type: String,
   },
 });
@@ -54,35 +57,21 @@ const BukaSchema = new mongoose.Schema({
     default: false,
   },
   opening_hours: {
-    monday: {
-      type: [OpeningHoursSchema],
-      default: [],
-    },
-    tuesday: {
-      type: [OpeningHoursSchema],
-      default: [],
-    },
-    wednesday: {
-      type: [OpeningHoursSchema],
-      default: [],
-    },
-    thursday: {
-      type: [OpeningHoursSchema],
-      default: [],
-    },
-    friday: {
-      type: [OpeningHoursSchema],
-      default: [],
-    },
-    saturday: {
-      type: [OpeningHoursSchema],
-      default: [],
-    },
-    sunday: {
-      type: [OpeningHoursSchema],
-      default: [],
-    },
+    type: [OpeningHoursSchema],
+   default: [
+        { day: 'Monday', openingTime: '', closingTime: '' },
+        { day: 'Tuesday', openingTime: '', closingTime: '' },
+        { day: 'Wednesday', openingTime: '', closingTime: '' },
+        { day: 'Thursday', openingTime: '', closingTime: '' },
+        { day: 'Friday', openingTime: '', closingTime: '' },
+        { day: 'Saturday', openingTime: '', closingTime: '' },
+        { day: 'Sunday', openingTime: '', closingTime: '' },
+      ],
   },
+ role: {
+      type: String,
+      default: 'buka',
+    },
 },{
     timestamps: true,
 });

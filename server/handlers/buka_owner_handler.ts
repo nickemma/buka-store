@@ -11,8 +11,8 @@ import jwt, { Secret } from 'jsonwebtoken';
 const secretKey = process.env.JWT_SECRET;
 const tokenExpiration = process.env.NODE_ENV === 'development' ? '1d' : '7d';
 
-const generateToken = (id: string) => {
-  return jwt.sign({ id }, secretKey as Secret, {
+const generateToken = (user: { _id: string; role: string }) => {
+  return jwt.sign( { id: user._id, role: user.role }, secretKey as Secret, {
     expiresIn: tokenExpiration,
   });
 };
@@ -47,7 +47,8 @@ export const registerBuka = async (req: Request, res: Response) => {
     });
 
     // Convert ObjectId to string
-    const token = generateToken(newBuka._id.toString());
+    const token = generateToken({ _id: newBuka._id.toString(), role: newBuka.role });
+
 
     // Set the token in a cookie with the same name as the token
     res.cookie('token', token, {
@@ -99,7 +100,7 @@ export const loginBuka = async (req: Request, res: Response) => {
     }
 
     // Convert ObjectId to string
-    const token = generateToken(buka._id.toString());
+    const token = generateToken({ _id: buka._id.toString(), role: buka.role });
 
     // Set the token in a cookie with the same name as the token
     res.cookie('token', token, {
@@ -165,3 +166,35 @@ export const updateBuka = async (req: Request, res: Response) => {
         res.status(500).json({ message: 'Something went wrong. Please try again...' });
   }
 };
+
+
+/*
+ * @route   GET api/bukas
+ * @desc    Get All Bukas
+ * @access  Private
+ */
+
+export const getAllBukas = async (req: Request, res: Response) => {
+  try {
+    const bukas = await Buka.find(); // Fetch all Bukas from the database
+    res.status(200).json(bukas);
+  } catch (error) {
+    res.status(500).json({ message: 'Something went wrong. Please try again...', error });
+  }
+};
+
+// export const getAllBukas = async (req: Request, res: Response) => {
+//   const { page = 1, limit = 10 } = req.query; // pagination value
+
+//   try {
+//     const bukas = await Buka.find()
+//       .limit(Number(limit))
+//       .skip((Number(page) - 1) * Number(limit));
+
+//     const total = await Buka.countDocuments(); // Get the total number of Bukas
+
+//     res.status(200).json({ bukas, total, page: Number(page), limit: Number(limit) });
+//   } catch (error) {
+//     res.status(500).json({ message: 'Something went wrong. Please try again...', error });
+//   }
+// };

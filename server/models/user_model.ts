@@ -54,6 +54,7 @@ const UserSchema = new mongoose.Schema(
       enum: [ROLES.USER, ROLES.ADMIN, ROLES.BUKA], // define the roles as constants to avoid typos
       default: 'user',
     },
+    lastLogin: { type: Date },
   },
   {
     timestamps: true,

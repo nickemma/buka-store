@@ -76,7 +76,7 @@ import {
   deleteOrder,
   getAllOrders,
 } from '../handlers/order_handler'
-import protect from '../middleware/auth';
+import {protect} from '../middleware/auth';
 
 const router = express.Router();
 

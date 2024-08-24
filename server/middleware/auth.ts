@@ -4,7 +4,7 @@ import jwt, { Secret } from 'jsonwebtoken';
 
 const secretKey = process.env.JWT_SECRET as Secret;
 
-const protect = async (
+export const protect = async (
   req: AuthorizedRequest<any>,
   res: Response,
   next: NextFunction
@@ -15,11 +15,11 @@ const protect = async (
 
   if (requestToken) {
     try {
-      // verify token
-      const decoded: any = jwt.verify(requestToken, secretKey);
+      // Verify token and cast decoded payload to include id and role
+      const decoded: any = jwt.verify(requestToken, secretKey) as { id: string; role: string };
 
-      // get user id from decoded token
-      req.user = decoded.id;
+      // get user id from decoded token and Assign the id and role to req.user
+      req.user = { id: decoded.id, role: decoded.role };
 
       // pass user to next middleware
       next();
@@ -32,4 +32,11 @@ const protect = async (
   }
 };
 
-export default protect;
+export const authorize = (...roles: string[]) => {
+  return (req: AuthorizedRequest<any>, res: Response, next: NextFunction) => {
+    if (!roles.includes(req.user?.role || '')) {
+      return res.status(403).json({ message: 'Unauthorized Access' });
+    }
+    next();
+  };
+};
