@@ -166,3 +166,35 @@ export const updateBuka = async (req: Request, res: Response) => {
         res.status(500).json({ message: 'Something went wrong. Please try again...' });
   }
 };
+
+
+/*
+ * @route   GET api/bukas
+ * @desc    Get All Bukas
+ * @access  Private
+ */
+
+export const getAllBukas = async (req: Request, res: Response) => {
+  try {
+    const bukas = await Buka.find(); // Fetch all Bukas from the database
+    res.status(200).json(bukas);
+  } catch (error) {
+    res.status(500).json({ message: 'Something went wrong. Please try again...', error });
+  }
+};
+
+// export const getAllBukas = async (req: Request, res: Response) => {
+//   const { page = 1, limit = 10 } = req.query; // pagination value
+
+//   try {
+//     const bukas = await Buka.find()
+//       .limit(Number(limit))
+//       .skip((Number(page) - 1) * Number(limit));
+
+//     const total = await Buka.countDocuments(); // Get the total number of Bukas
+
+//     res.status(200).json({ bukas, total, page: Number(page), limit: Number(limit) });
+//   } catch (error) {
+//     res.status(500).json({ message: 'Something went wrong. Please try again...', error });
+//   }
+// };
