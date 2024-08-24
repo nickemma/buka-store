@@ -121,39 +121,41 @@ function Kitchen({ id }) {
         <div className="border rounded-md p-3">
           <h1 className="text-xl font-bold">Cuisines</h1>
           <div className="space-y-4">
-            {data.filter((x) => x?.cuisine_owner?._id === id).map((item) => (
-              <div
-                key={item?._id}
-                className="flex items-center justify-between gap-4"
-              >
-                <div className="flex items-center gap-4">
-                  <img
-                    src="/food-buka.png"
-                    alt={item?.cuisine_name}
-                    width={50}
-                    height={50}
-                    className="rounded-md object-cover"
-                    style={{ aspectRatio: "64/64", objectFit: "cover" }}
-                  />
-                  <div>
-                    <h3 className="text-[0.7rem] font-bold">
-                      {item?.cuisine_name}
-                    </h3>
-                    <p className="text-muted-foreground text-[0.7rem]"></p>
-                    <p className="font-medium">${item?.price.toFixed(2)}</p>
-                  </div>
-                </div>
-
-                <Button
-                  onClick={() => {
-                    setOpen(true);
-                    setSelected(item);
-                  }}
+            {data
+              .filter((x) => x?.cuisine_owner?._id === id)
+              .map((item) => (
+                <div
+                  key={item?._id}
+                  className="flex items-center justify-between gap-4"
                 >
-                  <PlusCircle />
-                </Button>
-              </div>
-            ))}
+                  <div className="flex items-center gap-4">
+                    <img
+                      src="/food-buka.png"
+                      alt={item?.cuisine_name}
+                      width={50}
+                      height={50}
+                      className="rounded-md object-cover"
+                      style={{ aspectRatio: "64/64", objectFit: "cover" }}
+                    />
+                    <div>
+                      <h3 className="text-[0.7rem] font-bold">
+                        {item?.cuisine_name}
+                      </h3>
+                      <p className="text-muted-foreground text-[0.7rem]"></p>
+                      <p className="font-medium">${item?.price.toFixed(2)}</p>
+                    </div>
+                  </div>
+
+                  <Button
+                    onClick={() => {
+                      setOpen(true);
+                      setSelected(item);
+                    }}
+                  >
+                    <PlusCircle />
+                  </Button>
+                </div>
+              ))}
           </div>{" "}
           <AlertDialog open={open} onOpenChange={setOpen}>
             <AlertDialogContent className="text-center">

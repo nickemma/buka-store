@@ -66,11 +66,7 @@ function Buka() {
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setImage(reader.result);
-    };
-    reader.readAsDataURL(file);
+    setImage(file);
   };
 
   console.log(cookiesData);
@@ -160,14 +156,11 @@ function Buka() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold"> ₦45,231.89</div>
-    
             </CardContent>
           </Card>
           <Card x-chunk="dashboard-01-chunk-1">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Total Sales
-              </CardTitle>
+              <CardTitle className="text-sm font-medium">Total Sales</CardTitle>
               <UsersIcon className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -179,7 +172,9 @@ function Buka() {
           </Card>
           <Card x-chunk="dashboard-01-chunk-2" className="bg-[#0090308b]">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Canceled Orders</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                Canceled Orders
+              </CardTitle>
               <UsersIcon className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
