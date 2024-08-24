@@ -121,7 +121,7 @@ function Kitchen({ id }) {
         <div className="border rounded-md p-3">
           <h1 className="text-xl font-bold">Cuisines</h1>
           <div className="space-y-4">
-            {data.map((item) => (
+            {data.filter((x) => x?.cuisine_owner?._id === id).map((item) => (
               <div
                 key={item?._id}
                 className="flex items-center justify-between gap-4"

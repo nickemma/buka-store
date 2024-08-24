@@ -14,10 +14,10 @@ export default function Home() {
 
       <div className=" mx-5">
 
-        {data?.map((item) => (
-        <ProductCarousel item={item} header="Popular Meals" />
+     
+        <ProductCarousel datas={data} header="Popular Meals" />
 
-        ))}
+    
       </div>
     </main>
   );

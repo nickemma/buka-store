@@ -8,11 +8,16 @@ import { useLogin } from "@/components/hooks/useLogin";
 import PuffLoader from "react-spinners/PuffLoader";
 import { Checkbox } from "@/components/ui/checkbox";
 import Link from "next/link";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@radix-ui/react-label";
+
 export default function Login() {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
-  const { handleLogin } = useLogin(email, password, setLoading);
+  const [role, setRole] = useState("user");
+
+  const { handleLogin } = useLogin(email, password, setLoading, role);
 
   return (
     <section className="h-screen flex justify-center items-center">
@@ -22,6 +27,20 @@ export default function Login() {
           <h2 className="text-[1.7rem] font-semibold my-6">Login</h2>
 
           <form className="flex flex-col gap-4">
+          <RadioGroup
+              onValueChange={(value) => setRole(value)}
+              defaultValue="user"
+              className="flex"
+            >
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="user" id="r2" />
+                <Label htmlFor="r2">User</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="buka" id="r3" />
+                <Label htmlFor="r3">Buka</Label>
+              </div>
+            </RadioGroup>
             <div>
               <abel>Email</abel>
               <Input

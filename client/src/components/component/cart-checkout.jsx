@@ -4,7 +4,6 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { usePaystackPayment } from "react-paystack";
 import Link from "next/link";
 import {
   Select,
@@ -61,7 +60,7 @@ export function CartCheckout({ id }) {
     publicKey: "pk_test_0af8c9c840c5cec7443250dcc87f7a44b02eb8b0",
   };
 
-  const initializePayment = usePaystackPayment(config);
+
 
   const paidTransaction = async () => {
     await axios
@@ -157,7 +156,7 @@ export function CartCheckout({ id }) {
 
         setOderDetails(res.data);
         router.refresh();
-        initializePayment(onSuccess, onClose);
+
       })
       .catch((err) => {
         console.log(err, "Catch eeror");

@@ -6,7 +6,8 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Search, Utensils, DollarSign } from "lucide-react";
-import ProductCarousel from "@/components/ProductCarousel";
+import ProductCarousel, { ProductCard } from "@/components/ProductCarousel";
+import Navbar from "@/components/Navbar";
 
 function Cuisines() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -18,6 +19,7 @@ function Cuisines() {
   );
   return (
     <div>
+      <Navbar />
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-8">
           Explore Cuisines and Restaurants
@@ -32,11 +34,9 @@ function Cuisines() {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredRestaurants.map((item) => (
-            <ProductCarousel item={item} />
-          ))}
-        </div>
+        {filteredRestaurants.map((item) => (
+          <ProductCard item={item} />
+        ))}
         {filteredRestaurants.length === 0 && (
           <p className="text-center text-gray-500 mt-8">
             No restaurants found. Try a different search term.
