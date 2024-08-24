@@ -27,18 +27,10 @@ const Navbar = () => {
       </div>
 
       <div className="flex items-center gap-3  ">
-        <button className="  flex justify-center items-center rounded md text-sm text-black  ">
+        <Link href={"/cuisine"} className="  flex justify-center items-center rounded md text-sm text-black  ">
           <Search />
-        </button>
-        <Link
-          href="/cart-checkout"
-          className="  relative h-[30px] flex justify-center items-center rounded md text-sm text-black   "
-        >
-          <ShoppingCart />
-          <span className="bg-primary rounded-full text-white  w-5 h-5 text-center">
-            {cartLength ? cartLength?.length : 0}
-          </span>
         </Link>
+
 
         {cookiesData ? (
           <DropdownMenu>
