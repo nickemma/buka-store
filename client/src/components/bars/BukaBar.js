@@ -129,13 +129,12 @@ export const Navbar = () => {
               Dashboard
             </Link>
             <Link
-              href="#"
+              href="/buka/orders"
               className="mx-[-0.65rem] flex items-center gap-4 rounded-xl bg-muted px-3 py-2 text-foreground hover:text-foreground"
               prefetch={false}
             >
               <ShoppingCartIcon className="h-5 w-5" />
               Orders
-         
             </Link>
 
             <Link

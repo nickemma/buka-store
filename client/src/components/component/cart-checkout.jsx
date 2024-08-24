@@ -48,10 +48,9 @@ export function CartCheckout({ id }) {
 
   console.log(orderDetails);
 
-  const total = carts?.reduce(
-    (acc, item) => acc + item.price * item.quantity,
-    0
-  );
+  const total = carts
+    ?.filter((item) => item?.cuisine_owner_id === id)
+    .reduce((acc, item) => acc + item.price * item.quantity, 0);
 
   const config = {
     reference: new Date().getTime().toString(),
@@ -59,8 +58,6 @@ export function CartCheckout({ id }) {
     amount: total * 100, //Amount is in the country's lowest currency. E.g Kobo, so 20000 kobo = N200
     publicKey: "pk_test_0af8c9c840c5cec7443250dcc87f7a44b02eb8b0",
   };
-
-
 
   const paidTransaction = async () => {
     await axios
@@ -156,7 +153,6 @@ export function CartCheckout({ id }) {
 
         setOderDetails(res.data);
         router.refresh();
-
       })
       .catch((err) => {
         console.log(err, "Catch eeror");
@@ -196,54 +192,56 @@ export function CartCheckout({ id }) {
                 </Link>
               </div>
             ) : (
-              carts?.map((item) => (
-                <div
-                  key={item._id}
-                  className="flex items-center justify-between gap-4"
-                >
-                  <div className="flex items-center gap-4">
-                    <img
-                      src="/placeholder.svg"
-                      alt={item.name}
-                      width={64}
-                      height={64}
-                      className="rounded-md object-cover"
-                      style={{ aspectRatio: "64/64", objectFit: "cover" }}
-                    />
-                    <div>
-                      <h3 className="font-medium">{item.cuisine_name}</h3>
-                      <p className="text-muted-foreground">
-                        ${item.price.toFixed(2)} x {item.quantity}
-                      </p>
-                      <div className="flex items-center  gap-3">
-                        <button
-                          disabled={item?.quantity <= 0 && true}
-                          className=""
-                          onClick={() => {
-                            handleDecrement(item?._id);
-                          }}
-                        >
-                          <MinusCircle size={"20"} />
-                        </button>
-                        <h3 className="text-[1rem] font-bold text-primary">
-                          {item?.quantity}
-                        </h3>
-                        <button
-                          onClick={() => {
-                            handleIncrement(item?._id);
-                          }}
-                          className=""
-                        >
-                          <PlusCircle size={"20"} />
-                        </button>
+              carts
+                ?.filter((item) => item?.cuisine_owner_id === id)
+                .map((item) => (
+                  <div
+                    key={item._id}
+                    className="flex items-center justify-between gap-4"
+                  >
+                    <div className="flex items-center gap-4">
+                      <img
+                        src="/placeholder.svg"
+                        alt={item.name}
+                        width={64}
+                        height={64}
+                        className="rounded-md object-cover"
+                        style={{ aspectRatio: "64/64", objectFit: "cover" }}
+                      />
+                      <div>
+                        <h3 className="font-medium">{item.cuisine_name}</h3>
+                        <p className="text-muted-foreground">
+                          ${item.price.toFixed(2)} x {item.quantity}
+                        </p>
+                        <div className="flex items-center  gap-3">
+                          <button
+                            disabled={item?.quantity <= 0 && true}
+                            className=""
+                            onClick={() => {
+                              handleDecrement(item?._id);
+                            }}
+                          >
+                            <MinusCircle size={"20"} />
+                          </button>
+                          <h3 className="text-[1rem] font-bold text-primary">
+                            {item?.quantity}
+                          </h3>
+                          <button
+                            onClick={() => {
+                              handleIncrement(item?._id);
+                            }}
+                            className=""
+                          >
+                            <PlusCircle size={"20"} />
+                          </button>
+                        </div>
                       </div>
                     </div>
+                    <p className="font-medium">
+                      ${(item.price * item.quantity).toFixed(2)}
+                    </p>
                   </div>
-                  <p className="font-medium">
-                    ${(item.price * item.quantity).toFixed(2)}
-                  </p>
-                </div>
-              ))
+                ))
             )}
           </div>
           <div className="flex items-center justify-between">
