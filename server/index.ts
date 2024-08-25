@@ -5,6 +5,7 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
+import path from 'path';
 
 import swaggerUi from 'swagger-ui-express';
 import swaggerDocs from 'swagger-jsdoc'
@@ -41,7 +42,8 @@ app.use('/api/bukas', bukaRoutes);
 app.use('/api/cuisines', cuisineRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/admin', adminRoutes);
-app.use('/uploads', express.static('uploads'));
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+
 //============= Swagger UI Docs
 const options = {
   definition: {
