@@ -19,7 +19,7 @@ export const createCuisine = async (req: Request, res: Response) => {
     const newCuisine = new Cuisine({
       ...req.body,
       // Use uploaded image if available, else use default
-      image: imagePath || req.body.image, 
+      image: imagePath
     });
 
     await newCuisine.save();
