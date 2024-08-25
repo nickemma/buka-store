@@ -10,8 +10,11 @@ import Cuisine from '../models/cuisine_model';
 export const createCuisine = async (req: Request, res: Response) => {
   try {
     // Get the file path if the image is uploaded
-    const imagePath = req.file ? req.file.path : '';
+    const imagePath = req.file ? req.file.path : req.body.image || '';
 
+    if (!imagePath) {
+      return res.status(400).json({ message: 'Image is required' });
+    }
     // Create a new cuisine with the uploaded image path
     const newCuisine = new Cuisine({
       ...req.body,
