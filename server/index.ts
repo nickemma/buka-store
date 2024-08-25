@@ -14,6 +14,8 @@ import userRouter from './routes/user_routes';
 import bukaRoutes from './routes/buka_owner_routes';
 import cuisineRoutes from './routes/cuisine_routes';
 import orderRoutes from './routes/order_routes';
+import reviewRoutes from './routes/review_routes';
+import helpCenterRoutes from './routes/help_center_routes';
 import adminRoutes from './routes/admin_routes';
 
 const app = express();
@@ -40,6 +42,9 @@ app.use('/api/users', userRouter);
 app.use('/api/bukas', bukaRoutes);
 app.use('/api/cuisines', cuisineRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/review', reviewRoutes);
+app.use('/api/help_center', helpCenterRoutes);
 app.use('/api/admin', adminRoutes);
 
 //============= Swagger UI Docs

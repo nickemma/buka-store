@@ -90,7 +90,7 @@
  */
 
 import express from 'express';
-import { registerBuka, loginBuka, getSingleBuka, updateBuka, getAllBukas } from '../handlers/buka_owner_handler';
+import { registerBuka, loginBuka, getSingleBuka, updateBuka, getAllBukas, getBukaReviews } from '../handlers/buka_owner_handler';
 import {protect} from '../middleware/auth';
 
 const router = express.Router();
@@ -222,6 +222,8 @@ router.put('/:id', protect, updateBuka);
  *         description: Internal server error
  */
 router.get('/', protect, getAllBukas);
+
+router.get('/:bukaId/reviews', getBukaReviews);
 
 export default router;
 

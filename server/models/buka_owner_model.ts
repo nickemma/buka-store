@@ -68,6 +68,12 @@ const BukaSchema = new mongoose.Schema({
         { day: 'Sunday', openingTime: '', closingTime: '' },
       ],
   },
+  reviews: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Review',
+    },
+  ],
  role: {
       type: String,
       default: 'buka',

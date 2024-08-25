@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import Buka from '../models/buka_owner_model';
+import Review from '../models/review_model';
 import bcrypt from 'bcryptjs';
 import jwt, { Secret } from 'jsonwebtoken';
 
@@ -198,3 +199,31 @@ export const getAllBukas = async (req: Request, res: Response) => {
 //     res.status(500).json({ message: 'Something went wrong. Please try again...', error });
 //   }
 // };
+
+/*
+ * @route   GET api/buka/:id/reviews
+ * @desc    Get All Reviews for a Buka
+ * @access  Private
+ */
+export const getBukaReviews = async (req: Request, res: Response) => {
+  try {
+    const { bukaId } = req.params;
+
+    // Find Buka and populate the reviews
+    const buka = await Buka.findById(bukaId)
+      .populate({
+        path: 'reviews',
+        populate: { path: 'user', select: 'first_name last_name image' }
+      })
+      .exec();
+
+    if (!buka) {
+      return res.status(404).json({ message: 'Buka not found' });
+    }
+
+    // Return Buka with reviews
+    res.status(200).json(buka);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to retrieve buka reviews', error });
+  }
+};
