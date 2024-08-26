@@ -1,20 +1,26 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import Link from "next/link";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
 
+import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { getCookie } from "cookies-next";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
 import useCart from "@/components/hooks/useCart";
 import {
   Minus,
@@ -28,9 +34,11 @@ import {
 import axios from "axios";
 import PuffLoader from "react-spinners/PuffLoader";
 import { useRouter } from "next/navigation";
+import CheckoutForm from "../CheckoutForm";
 const endpoint = "https://buka-store.vercel.app/api/orders";
 
 // Checkout Components
+const stripePromise = loadStripe(`pk_test_51Pr8CxHlirJCHboKqBF65J7lgbAZVsAaBp2ViY8qN9D6oEbWmuAhoQOgMoHWQ7DnVxQFwznsykcCmrO4c2L7C4vk00DZx4Zooa`);
 
 export function CartCheckout({ id }) {
   // fetching cuisines from cookies
@@ -44,12 +52,14 @@ export function CartCheckout({ id }) {
   const [data, setData] = useState(userData?.user);
   const [loading, setLoading] = useState(false);
   const [orderDetails, setOderDetails] = useState(null);
+  const [clientSecret, setClientSecret] = useState("");
+  const [open, setOpen] = useState(false);
+  const [isPaid, setIsPaid] = useState(false);
+
   const router = useRouter();
 
-  console.log(orderDetails);
-
   const total = carts
-    ?.filter((item) => item?.cuisine_owner_id === id)
+    ?.filter((item) => item?.cuisine_owner === id)
     .reduce((acc, item) => acc + item.price * item.quantity, 0);
 
   const config = {
@@ -62,7 +72,7 @@ export function CartCheckout({ id }) {
   const paidTransaction = async () => {
     await axios
       .patch(
-        endpoint + `update/${orderDetails?._id}`,
+        endpoint + `/update/${orderDetails?._id}`,
         {
           is_paid: "true",
         },
@@ -83,6 +93,7 @@ export function CartCheckout({ id }) {
           },
         });
 
+        setOpen(false)
         router.refresh();
       })
       .catch((err) => {
@@ -121,6 +132,18 @@ export function CartCheckout({ id }) {
 
   const { handleDecrement, handleIncrement } = useCart();
 
+  useEffect(() => {
+    fetch("/api/create-payment-intent", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ amount: total }),
+    })
+      .then((res) => res.json())
+      .then((data) => setClientSecret(data.clientSecret));
+  }, [total]);
+
   const handleCheckout = async () => {
     const details = {
       order_items: orderItems,
@@ -152,7 +175,7 @@ export function CartCheckout({ id }) {
         });
 
         setOderDetails(res.data);
-        router.refresh();
+        setOpen(true);
       })
       .catch((err) => {
         console.log(err, "Catch eeror");
@@ -193,7 +216,7 @@ export function CartCheckout({ id }) {
               </div>
             ) : (
               carts
-                ?.filter((item) => item?.cuisine_owner_id === id)
+                ?.filter((item) => item?.cuisine_owner === id)
                 .map((item) => (
                   <div
                     key={item._id}
@@ -268,8 +291,56 @@ export function CartCheckout({ id }) {
               </Button>
             </div>
           </di>
+
+          <PaymentComponents
+            open={open}
+            setOpen={setOpen}
+            id={id}
+            paidTransaction={paidTransaction}
+            clientSecret={clientSecret}
+          />
         </div>
       </div>
     </div>
   );
 }
+
+
+const PaymentComponents = ({
+  open,
+  setOpen,
+  id,
+  paidTransaction,
+  clientSecret,
+}) => {
+  const appearance = {
+    theme: "stripe",
+  };
+  const options = {
+    clientSecret,
+    appearance,
+  };
+
+  console.log(clientSecret)
+  return (
+   
+      <AlertDialog open={open} onOpenChange={setOpen}>
+        <AlertDialogContent className="text-center">
+          <AlertDialogHeader>
+            <AlertDialogTitle></AlertDialogTitle>
+            <AlertDialogDescription></AlertDialogDescription>
+          </AlertDialogHeader>
+          {clientSecret && (
+            <Elements stripe={stripePromise} options={options} >
+              <CheckoutForm paidTransaction={paidTransaction} setOpen={setOpen} />
+            </Elements>
+          )}
+
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+  );
+};

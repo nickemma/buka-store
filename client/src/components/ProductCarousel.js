@@ -39,7 +39,7 @@ export default function ProductCarousel({ header, datas }) {
               <div className="p-4">
                 <Card>
                   <img
-                    src={"/food2-buka.png"}
+                    src={item?.image}
                     alt={item?.title}
                     width={300}
                     height={300}

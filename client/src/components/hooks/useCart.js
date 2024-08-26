@@ -89,6 +89,7 @@ const useCart = (quantity, setQuantity, setOpen) => {
           quantity,
           price: x.price,
           image: x.image,
+          cuisine_owner: x?.cuisine_owner._id,
         },
       ]);
       setCookie(
@@ -96,6 +97,7 @@ const useCart = (quantity, setQuantity, setOpen) => {
         JSON.stringify([
           ...carts,
           {
+            cuisine_owner: x?.cuisine_owner._id,
             _id: x._id,
             cuisine_name: x.cuisine_name,
             quantity,

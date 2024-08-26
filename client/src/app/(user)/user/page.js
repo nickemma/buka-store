@@ -21,6 +21,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { getCookie } from "cookies-next";
 import { toast } from "sonner";
 import axios from "axios";
+import { Badge } from "@/components/ui/badge";
 
 export default function Component() {
   const [selectedOrder, setSelectedOrder] = useState(null);
@@ -76,9 +77,9 @@ export default function Component() {
         })
         .then((res) => {
           setOrders(
-            res.data.filter(
-              (item) => item?.order_owner._id === userData?.user._id
-            )
+            res.data
+              
+              .filter((item) => item?.order_owner._id === userData?.user._id)
           );
 
           router.refresh();
@@ -89,6 +90,8 @@ export default function Component() {
     };
     fetchOrder();
   }, []);
+
+  console.log(orders);
 
   return (
     <Card className="w-full max-w-4xl mx-auto my-6">
@@ -109,10 +112,19 @@ export default function Component() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {orders?.map((order, index) => (
+            {orders?.sort((a, b) => b.createdAt.localeCompare(a.createdAt)).map((order, index) => (
               <TableRow key={order?._id}>
                 <TableCell>
-                  {order?.is_paid === "true" ? "Paid" : "Not Paid"}
+                  <Badge
+                    className={
+                      order?.is_paid === "true"
+                        ? "bg-green-600 text-[0.7rem]"
+                        : "bg-red-600 text-[0.7rem]"
+                    }
+                  >
+                    {" "}
+                    {order?.is_paid === "true" ? "Paid" : "Not Paid"}
+                  </Badge>
                 </TableCell>
                 <TableCell>{order?.date}</TableCell>
                 <TableCell>${order?.order_total.toFixed(2)}</TableCell>
@@ -131,7 +143,7 @@ export default function Component() {
                     <DialogContent className="max-w-3xl">
                       <DialogHeader>
                         <DialogTitle>
-                          Order Details - #{selectedOrder?.id}
+                          Order Details 
                         </DialogTitle>
                       </DialogHeader>
                       <ScrollArea className="max-h-[60vh]">
@@ -153,7 +165,9 @@ export default function Component() {
                           <TableBody>
                             {selectedOrder?.map((item, index) => (
                               <TableRow key={index}>
-                                <TableCell>{item?.cuisine_id.cuisine_name}</TableCell>
+                                <TableCell>
+                                  {item?.cuisine_id.cuisine_name}
+                                </TableCell>
                                 <TableCell className="text-right">
                                   {item?.quantity}
                                 </TableCell>

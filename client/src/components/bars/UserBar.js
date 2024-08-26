@@ -33,10 +33,13 @@ import {
   ShoppingCartIcon,
   UsersIcon,
 } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { deleteCookie } from "cookies-next";
+import useCookie from "../hooks/useCookie";
 
 function UserBar() {
   const path = usePathname();
+  const router = useRouter();
   console.log(path);
   return (
     <div className="hidden border-r bg-muted/40 md:block">
@@ -102,6 +105,8 @@ function UserBar() {
 export default UserBar;
 
 export const Navbar = () => {
+  const { cookiesData } = useCookie();
+
   return (
     <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
       <Sheet>
@@ -153,21 +158,43 @@ export const Navbar = () => {
         <form></form>
       </div>
       <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="secondary" size="icon" className="rounded-full">
-            <CircleUserIcon className="h-5 w-5" />
-            <span className="sr-only">Toggle user menu</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuLabel>My Account</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem>Settings</DropdownMenuItem>
-          <DropdownMenuItem>Support</DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem>Logout</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="secondary" size="icon" className="rounded-full">
+                <CircleUserIcon className="h-5 w-5" />
+                <span className="sr-only">Toggle user menu</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>
+                <Link href={cookiesData?.user?.first_name ? "/user" : "/buka"}>
+                  My Account
+                </Link>
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>
+                {" "}
+                <Link
+                  href={
+                    cookiesData?.user?.first_name
+                      ? "/user/settings"
+                      : "/buka/settings"
+                  }
+                >
+                  Settings
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                className="text-red-600 hover:text-red-600"
+                onClick={() => {
+                  deleteCookie("user");
+                  router.refresh();
+                }}
+              >
+                Logout
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
     </header>
   );
 };

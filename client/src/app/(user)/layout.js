@@ -1,6 +1,8 @@
 import { Inter } from "next/font/google";
 import ".././globals.css";
 import UserBar, { Navbar } from "@/components/bars/UserBar";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -11,6 +13,13 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+ 
+  const user = cookies().get("user");
+  const getUser = user ? JSON.parse(user.value) : null;
+
+  if (!getUser?.user?.first_name && !getUser?.user?.token && !getUser) {
+    redirect("/login");
+  }
   return (
     <html lang="en">
       <body className={inter.className}>
