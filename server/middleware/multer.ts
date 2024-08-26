@@ -1,35 +1,31 @@
+import cloudinary from 'cloudinary';
+import { CloudinaryStorage } from 'multer-storage-cloudinary';
 import multer from 'multer';
-import path from 'path';
 
-// Set up the multer storage configuration
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/'); // Specify the directory to save uploaded images
-  },
-  filename: function (req, file, cb) {
-    // Generate a unique filename for the uploaded file
-    cb(null, `${Date.now()}_${file.originalname}`);
-  },
+// Configure Cloudinary
+cloudinary.v2.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Define a file filter to allow only specific file types (e.g., images)
-const fileFilter = (req: any, file: any, cb: any) => {
-  const allowedTypes = /jpeg|jpg|png/;
-  const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-  const mimetype = allowedTypes.test(file.mimetype);
+// Extend the params type to include folder and format
+interface CustomParams {
+  folder: string;
+  format: (req: any, file: any) => Promise<string>;
+  public_id: (req: any, file: any) => string;
+}
 
-  if (extname && mimetype) {
-    return cb(null, true);
-  } else {
-    cb(new Error('Only JPEG and PNG files are allowed!'));
-  }
-};
-
-// Set up the multer instance with storage, file filter, and file size limit
-const upload = multer({
-  storage: storage,
-  limits: { fileSize: 1024 * 1024 * 5 }, // 5 MB file size limit
-  fileFilter: fileFilter,
+// Set up Multer to use Cloudinary storage
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary.v2,
+  params: {
+    folder: 'uploads',
+    format: async (req: any, file: any) => 'png', // Or dynamically choose file format
+    public_id: (req, file) => `${Date.now()}_${file.originalname}`,
+  } as CustomParams, // Type assertion here
 });
+
+const upload = multer({ storage: storage });
 
 export default upload;
