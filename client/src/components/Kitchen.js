@@ -41,10 +41,9 @@ function Kitchen({ id }) {
   const cartJson = getCookie("cart");
   const carts = cartJson ? JSON.parse(cartJson) : [];
 
-  const total = carts?.reduce(
-    (acc, item) => acc + item.price * item.quantity,
-    0
-  );
+  const total = carts
+    ?.filter((x) => x?.cuisine_owner === id)
+    .reduce((acc, item) => acc + item.price * item.quantity, 0);
 
   const handleCart = (data) => {
     console.log({
@@ -130,7 +129,7 @@ function Kitchen({ id }) {
                 >
                   <div className="flex items-center gap-4">
                     <img
-                      src="/food-buka.png"
+                      src={item?.image}
                       alt={item?.cuisine_name}
                       width={50}
                       height={50}
@@ -214,14 +213,14 @@ function Kitchen({ id }) {
           <div className="space-y-6">
             <h1 className="text-xl font-bold">Your Cart</h1>
             <div className="space-y-4">
-              {carts?.length <= 0 ? (
+              {carts?.filter((x) => x?.cuisine_owner === id).length <= 0 ? (
                 <div className="h-[150px] flex flex-col items-center justify-center">
                   <h2 className="text-lg font-bold text-primary">
                     Your Cart is Empty
                   </h2>
                 </div>
               ) : (
-                carts?.map((item) => (
+                carts?.filter((x) => x?.cuisine_owner === id).map((item) => (
                   <div
                     key={item._id}
                     className="flex items-center justify-between gap-4"
@@ -273,7 +272,7 @@ function Kitchen({ id }) {
                 ))
               )}
             </div>
-            <div className="flex items-center justify-between">
+            <div className="flex  items-center justify-between">
               <p className="text-lg font-medium">Total</p>
               <p className="text-xl font-bold">${total.toFixed(2)}</p>
             </div>
