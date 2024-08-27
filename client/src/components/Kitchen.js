@@ -62,6 +62,7 @@ function Kitchen({ id }) {
   };
 
   const { data } = useCuisine();
+  console.log("data=======>", data)
   const { handleAddToCart, handleDecrement, handleIncrement } = useCart(
     quantity,
     setQuantity,

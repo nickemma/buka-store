@@ -2,9 +2,7 @@
 
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { toast } from "sonner";
 
-import React from "react";
 const endpoint = "https://buka-store.vercel.app/api/cuisines";
 function useCuisine(id) {
   const [data, setData] = useState([]);
@@ -21,7 +19,7 @@ function useCuisine(id) {
     fetchCuisines();
   }, []);
 
-  console.log(data);
+  console.log("data.....",data);
 
   useEffect(() => {
     const fetchCuisines = async () => {
@@ -33,6 +31,7 @@ function useCuisine(id) {
 
     fetchCuisines();
   }, []);
+  console.log("details", details);
 
   return { data, details };
 }

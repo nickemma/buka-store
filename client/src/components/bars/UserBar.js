@@ -39,7 +39,6 @@ import useCookie from "../hooks/useCookie";
 
 function UserBar() {
   const path = usePathname();
-  const router = useRouter();
   console.log(path);
   return (
     <div className="hidden border-r bg-muted/40 md:block">
@@ -106,7 +105,7 @@ export default UserBar;
 
 export const Navbar = () => {
   const { cookiesData } = useCookie();
-
+ const router = useRouter();
   return (
     <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
       <Sheet>

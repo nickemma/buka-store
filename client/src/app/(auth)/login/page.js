@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -17,7 +17,7 @@ export default function Login() {
   const [role, setRole] = useState("user");
 
   const { handleLogin } = useLogin(email, password, setLoading, role);
-
+  
   return (
     <section className="h-screen flex justify-center items-center">
       <div className=" h-full w-full flex justify-center items-center  ">

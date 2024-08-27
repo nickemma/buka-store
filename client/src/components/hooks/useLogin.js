@@ -1,8 +1,6 @@
 "use client";
-import { useState, useEffect } from "react";
 import axios from "axios";
 import { setCookie } from "cookies-next";
-import { getCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 

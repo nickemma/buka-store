@@ -1,6 +1,5 @@
 "use client";
 
-import { CircleUserIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { deleteCookie, getCookie } from "cookies-next";
 import useCookie from "@/components/hooks/useCookie";
@@ -25,9 +24,7 @@ const Navbar = () => {
   const cartLength = cartJson ? JSON.parse(cartJson) : "";
   const { cookiesData } = useCookie();
   const router = useRouter();
-  console.log(cookiesData);
-  console.log(cookiesData?.user?.first_name);
-  console.log(cookiesData?.user?.image);
+
   return (
     <div className="flex justify-between items-center px-3 py-4 ">
       <div>
@@ -62,7 +59,7 @@ const Navbar = () => {
       </span>
     </div>
         <Link href={"/cuisine"} className="  flex justify-center items-center rounded md text-sm text-black  ">
-         Explore
+         Catering
         </Link>
 
         {cookiesData ? (

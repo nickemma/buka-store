@@ -83,7 +83,7 @@ export default function Component() {
           router.refresh();
         })
         .catch((err) => {
-          console.log(err, "Catch eeror");
+          console.log(err, "Catch error");
         });
     };
     fetchOrder();
