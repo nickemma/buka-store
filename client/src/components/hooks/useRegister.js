@@ -13,7 +13,6 @@ export const useRegister = (
   firstName,
   lastName,
   password,
-  phone,
   email,
   setLoading,
   role,

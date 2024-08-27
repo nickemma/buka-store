@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 
-import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useLogin } from "@/components/hooks/useLogin";
@@ -23,11 +22,15 @@ export default function Login() {
     <section className="h-screen flex justify-center items-center">
       <div className=" h-full w-full flex justify-center items-center  ">
         <div className="bg-white w-full md:w-[500px]  rounded-md px-5 py-7">
+          <div class="flex justify-center items-center">
           <img src="/buka-logo.png" width="200" height="200" />
-          <h2 className="text-[1.7rem] font-semibold my-6">Login</h2>
-
+          </div>
+          <h2 className="text-[1.7rem] font-semibold my-6 text-[#1E1E1E] text-center">Log In</h2>
+          <p className="text-[#32CD32] text-[1.5rem] mb-12 text-center">
+            Welcome back!
+          </p>
           <form className="flex flex-col gap-4">
-          <RadioGroup
+             <RadioGroup
               onValueChange={(value) => setRole(value)}
               defaultValue="user"
               className="flex"
@@ -87,7 +90,7 @@ export default function Login() {
                 htmlFor="terms1"
                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
-                Need an account{"  "}
+               Don&apos;t have an account?{"  "}
                 <Link href="/register" className="text-primary font-semibold">
                   Sign Up
                 </Link>{" "}

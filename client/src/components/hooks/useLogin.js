@@ -41,7 +41,7 @@ export const useLogin = (email, password, setLoading, role) => {
             router.refresh();
           })
           .catch((err) => {
-            console.log(err, "Catch eeror");
+            console.log(err, "Catch error");
             toast.error(
               <div>
                 {err.response.data.errors
@@ -93,7 +93,7 @@ export const useLogin = (email, password, setLoading, role) => {
             router.refresh();
           })
           .catch((err) => {
-            console.log(err, "Catch eeror");
+            console.log(err, "Catch error");
             toast.error(
               <div>
                 {err.response.data.errors

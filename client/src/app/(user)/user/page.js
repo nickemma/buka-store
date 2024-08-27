@@ -19,7 +19,6 @@ import {
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { getCookie } from "cookies-next";
-import { toast } from "sonner";
 import axios from "axios";
 import { Badge } from "@/components/ui/badge";
 
@@ -29,7 +28,6 @@ export default function Component() {
   const endpoint = "https://buka-store.vercel.app/api/orders";
   const userJson = getCookie("user");
   const userData = userJson ? JSON.parse(userJson) : "";
-  console.log(selectedOrder);
   const completedOrders = [
     {
       id: "1001",

@@ -90,7 +90,7 @@ function Kitchen({ id }) {
               </div>
               <div>
                 <h2 className=" underline text-[0.7rem] ">Delivery Time</h2>
-                <span className=" text-sm  font-semibold">8am - 10pm</span>
+                <span className=" text-sm  font-semibold">10 - 20 min</span>
               </div>
             </div>
           </div>

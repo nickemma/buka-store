@@ -12,14 +12,12 @@ const endpoint = "https://buka-store.vercel.app/api/users/";
 
 function Settings() {
   const [loading, setLoading] = useState(false);
+   const [file, setFile] = useState(null); 
+  const [preview, setPreview] = useState(""); 
   const cookie = getCookie("user");
   const myData = cookie ? JSON.parse(cookie) : "";
   const router = useRouter();
   const [data, setData] = useState(myData?.user);
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-  };
 
   const valueChange = (fieldName, value) => {
     setData((prevState) => ({
@@ -28,11 +26,26 @@ function Settings() {
     }));
   };
 
-  const handleUpdate = async (e) => {
+const handleUpdate = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     try {
+      // Upload image if selected
+      if (file) {
+        const formData = new FormData();
+        formData.append("image", file);
+
+        // Replace with your image upload endpoint
+        await axios.post(endpoint + "upload-image", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: "Bearer " + data?.token,
+          },
+        });
+      }
+
+      // Update user data
       await axios
         .patch(endpoint + "updateuser", data, {
           headers: {
@@ -54,7 +67,7 @@ function Settings() {
           router.refresh();
         })
         .catch((err) => {
-          console.log(err, "Catch eeror");
+          console.log(err, "Catch error");
           toast.error(
             <div>
               {err.response.data.errors
@@ -81,13 +94,21 @@ function Settings() {
       });
     }
   };
+  // Handle file input change
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFile(file);
+      setPreview(URL.createObjectURL(file));
+    }
+  };
 
   return (
     <div>
       <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
         <div className="">
           <h1 className="text-lg font-semibold md:text-2xl">
-            Account Settings
+            Profile Information
           </h1>
         </div>
         <div className=" rounded-lg border border-dashed shadow-sm">
@@ -124,14 +145,37 @@ function Settings() {
                   />
                 </div>
                 <div>
-                  <abel className="text-[0.8rem] font-semibold">Email</abel>
-
-                  <Input
-                    value={data?.email}
-                    onChange={(e) => valueChange("email", e.target.value)}
-                    placeholder="Email"
+                <label className="text-[0.8rem] font-semibold">Profile Image URL</label>
+                <div className="flex items-center gap-3">
+                  <img
+                    src={preview || data?.image || "/default-avatar.png"}
+                    alt="Profile"
+                    className="w-8 h-8 rounded-full object-cover"
                   />
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    className="hidden"
+                    id="image-upload"
+                  />
+                  <label
+                    htmlFor="image-upload"
+                    className="cursor-pointer text-green-500"
+                  >
+                    Change Image
+                  </label>
                 </div>
+              </div>
+                <div>
+                <label className="text-[0.8rem] font-semibold">Email</label>
+                <Input
+                  value={data?.email}
+                  onChange={(e) => valueChange("email", e.target.value)}
+                  placeholder="Email"
+                  disabled // Disable email field
+                />
+              </div>
               </div>
 
               <div className="mt-5 m-auto flex justify-center">

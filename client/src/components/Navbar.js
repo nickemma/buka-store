@@ -1,6 +1,6 @@
 "use client";
 
-import { Search, ShoppingCart, CircleUserIcon } from "lucide-react";
+import { CircleUserIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { deleteCookie, getCookie } from "cookies-next";
 import useCookie from "@/components/hooks/useCookie";
@@ -14,12 +14,20 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 const Navbar = () => {
+  const [preOrder, setPreOrder] = useState(false);
+
+  const handleToggle = () => {
+    setPreOrder(!preOrder);
+  };
   const cartJson = getCookie("cart");
   const cartLength = cartJson ? JSON.parse(cartJson) : "";
   const { cookiesData } = useCookie();
   const router = useRouter();
   console.log(cookiesData);
+  console.log(cookiesData?.user?.first_name);
+  console.log(cookiesData?.user?.image);
   return (
     <div className="flex justify-between items-center px-3 py-4 ">
       <div>
@@ -27,18 +35,45 @@ const Navbar = () => {
       </div>
 
       <div className="flex items-center gap-3  ">
+        <div
+      className={`relative w-32 h-10 rounded-full p-1 cursor-pointer transition-all duration-300 ${
+        preOrder ? 'bg-green-600' : 'bg-gray-300'
+      }`}
+      onClick={handleToggle}
+    >
+      <div
+        className={`absolute w-1/2 h-[80%] rounded-full bg-white transition-transform duration-300 ${
+          preOrder ? 'translate-x-full' : 'translate-x-0'
+        }`}
+      ></div>
+      <span
+        className={`absolute inset-0 flex items-center justify-center font-medium transition-opacity duration-300 ${
+          preOrder ? 'opacity-0' : 'opacity-100'
+        }`}
+      >
+        Order Now
+      </span>
+      <span
+        className={`absolute inset-0 flex items-center justify-center font-medium transition-opacity duration-300 ${
+          preOrder ? 'opacity-100' : 'opacity-0'
+        }`}
+      >
+        Pre-Order
+      </span>
+    </div>
         <Link href={"/cuisine"} className="  flex justify-center items-center rounded md text-sm text-black  ">
-          <Search />
+         Explore
         </Link>
-
 
         {cookiesData ? (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="secondary" size="icon" className="rounded-full">
-                <CircleUserIcon className="h-5 w-5" />
-                <span className="sr-only">Toggle user menu</span>
+              <div className="flex items-center gap-1">
+               <Button variant="secondary" size="icon" className="rounded-full">
+                <img src={cookiesData?.user?.image} className="h-5 w-5 rounded-full" />
               </Button>
+                 <span className="hidden md:block text-sm font-medium">{cookiesData?.user?.first_name}</span>
+              </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>
@@ -73,13 +108,6 @@ const Navbar = () => {
           </DropdownMenu>
         ) : (
           <div className="flex gap-2">
-          <Link
-            href="/register"
-            variant="outline"
-            className="bg-green-500  w-[100px] h-[30px] flex justify-center items-center rounded md text-sm text-black   "
-          >
-            Regiser
-          </Link>
             <Link
               href="/login"
               className="bg-green-500 w-[100px] h-[30px] flex justify-center items-center rounded md text-sm text-black   "
@@ -89,9 +117,6 @@ const Navbar = () => {
           </div>
         )}
 
-        {/* <button className="bg-[none] text-black  ">
-          <Search />
-        </button> */}
         {/* <button className="bg-[none] text-black   ">
           <UserIcon />
         </button> */}
