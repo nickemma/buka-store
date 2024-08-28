@@ -34,3 +34,12 @@ export const createReview = async (req: AuthorizedRequest<any>, res: Response) =
     res.status(500).json({ message: 'Failed to add review', error });
   }
 };
+
+export const getReviews = async (req: Request, res: Response) => {
+  try {
+    const reviews = await Review.find().populate('user').populate('buka');
+    res.status(200).json({ reviews });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to get reviews', error });
+  }
+};
