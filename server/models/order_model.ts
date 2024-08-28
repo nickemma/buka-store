@@ -46,8 +46,8 @@ const OrderSchema = new mongoose.Schema({
     required: [true, 'Please enter the ready date'],
   },
   is_paid: {
-    type: String,
-    required: [true, 'Please enter the payment method'],
+    type: Boolean,
+    default: false,
   },
 }, {
   timestamps: true,
