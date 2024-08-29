@@ -161,7 +161,7 @@ router.get('/:id', getCuisineById);
  *       404:
  *         description: Cuisine not found
  */
-router.put('/:id', protect, updateCuisine);
+router.put('/:id', protect, upload.single('image'), updateCuisine);
 
 /**
  * @swagger
