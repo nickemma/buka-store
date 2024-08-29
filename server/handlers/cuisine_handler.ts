@@ -75,11 +75,17 @@ export const getCuisineById = async (req: Request, res: Response) => {
  * @access  Private
  */
 export const updateCuisine = async (req: Request, res: Response) => {
+
   try {
-    const updatedCuisine = await Cuisine.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
+    const updatedData = {
+      ...req.body,
+      image: req.file ? req.file.path : req.body.image,
+    }
+
+    const updatedCuisine = await Cuisine.findByIdAndUpdate(req.params.id, updatedData, {
+  new: true,
+  runValidators: true,
+   });
     if (updatedCuisine) {
       res.status(200).json(updatedCuisine);
     } else {
