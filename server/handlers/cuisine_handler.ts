@@ -8,6 +8,7 @@ import Cuisine from '../models/cuisine_model';
  */
 
 export const createCuisine = async (req: Request, res: Response) => {
+ 
   try {
     // Get the file path if the image is uploaded
     const imagePath = req.file ? req.file.path : req.body.image || '';
@@ -15,11 +16,18 @@ export const createCuisine = async (req: Request, res: Response) => {
     if (!imagePath) {
       return res.status(400).json({ message: 'Image is required' });
     }
+
+    // Check file size and format if necessary
+    const fileSize = req?.file?.size ?? 0;
+    if (fileSize > 5 * 1024 * 1024) {  // Check for 5MB limit
+      return res.status(400).json({ message: 'File size exceeds limit' });
+    }
+
     // Create a new cuisine with the uploaded image path
     const newCuisine = new Cuisine({
       ...req.body,
       // Use uploaded image if available, else use default
-      image: imagePath
+      image: imagePath,
     });
 
     await newCuisine.save();

@@ -1,6 +1,7 @@
 import cloudinary from 'cloudinary';
 import { CloudinaryStorage } from 'multer-storage-cloudinary';
 import multer from 'multer';
+import path from 'path';
 
 // Configure Cloudinary
 cloudinary.v2.config({
@@ -21,7 +22,15 @@ const storage = new CloudinaryStorage({
   cloudinary: cloudinary.v2,
   params: {
     folder: 'uploads',
-    format: async (req: any, file: any) => 'png', // Or dynamically choose file format
+    // format: async (req: any, file: any) => 'png', 
+    format: async (req: any, file: any) => {
+      // Determine the file format based on the file extension
+      const ext = path.extname(file.originalname).toLowerCase();
+      if (['.png', '.jpg', '.jpeg'].includes(ext)) {
+        return ext.substring(1); // Remove the dot
+      }
+      return 'png'; // Default format if none of the above
+    },
     public_id: (req, file) => `${Date.now()}_${file.originalname}`,
   } as CustomParams, // Type assertion here
 });
