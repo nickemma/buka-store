@@ -88,7 +88,6 @@ export const getAllOrders = async (req: Request, res: Response) => {
  */
 
 export const createCheckout = async (req: Request, res: Response) => {
-  console.log('Body:', req.body);
   try {
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],

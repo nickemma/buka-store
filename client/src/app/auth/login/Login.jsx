@@ -17,7 +17,6 @@ export default function Login() {
   const [role, setRole] = useState("user");
 
   const { handleLogin } = useLogin(email, password, setLoading, role);
-  console.log("role", role);
 
   return (
     <section className="h-screen flex justify-center items-center">

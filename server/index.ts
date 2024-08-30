@@ -25,7 +25,7 @@ app.use(express.json());
 app.use(
   cors({
     credentials: true,
-    origin: ["http://localhost:3000", "https://buka-store-client.vercel.app", "http://localhost:5173"],
+    origin: ["http://localhost:5173", "https://buka-store.vercel.app"],
   })
 );
 

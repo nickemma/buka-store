@@ -77,7 +77,7 @@ function KitchenPage() {
   }, []);
 
   const handleCheckout = () => {
-    if (userData === undefined) {
+    if (userData) {
       navigate("/user/checkout");
     } else {
       navigate("/login");

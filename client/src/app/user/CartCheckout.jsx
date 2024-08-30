@@ -10,8 +10,8 @@ import { useCartStore } from "@/store/CartStore";
 import { loadStripe } from "@stripe/stripe-js";
 import { toast } from "sonner";
 
-const endpoint = "https://buka-store.vercel.app/api/orders";
-// const endpoint = "http://localhost:5000/api/orders";
+const endpoint = "https://buka-store.vercel.app/api/orders/";
+// const endpoint = "http://localhost:5000/api/orders/";
 
 const CartCheckout = () => {
   // fetching cuisines from cookies
@@ -25,6 +25,7 @@ const CartCheckout = () => {
     (acc, item) => acc + item.price * item.quantity,
     0
   );
+  console.log(cart, "cart");
 
   const makePayment = async () => {
     const stripe = await loadStripe(
@@ -120,7 +121,7 @@ const CartCheckout = () => {
               <div className="h-[150px] flex flex-col items-center justify-center">
                 <h2 className="text-lg font-bold">Your Cart is Empty</h2>
 
-                <Link href="/cuisine">
+                <Link to="/cuisine">
                   <Button>Continue Shopping</Button>
                 </Link>
               </div>
