@@ -107,7 +107,7 @@ export const getUsersWithActivityStats = async (req: Request, res: Response) => 
 export const getBukaStats = async (req: Request, res: Response) => {
   try {
     // Get the total number of Bukas
-    const totalBukas = await Buka.countDocuments();
+    const totalBukas = await Buka.find({ role: "buka" });
 
     // Get the number of active Bukas (go_live: true)
     const activeBukas = await Buka.countDocuments({ go_live: true });
