@@ -52,7 +52,7 @@ const UserSchema = new mongoose.Schema(
     role: {
       type: String,
       enum: [ROLES.USER, ROLES.ADMIN, ROLES.BUKA], // define the roles as constants to avoid typos
-      default: 'user',
+      default: ROLES.USER,
     },
     lastLogin: { type: Date },
   },

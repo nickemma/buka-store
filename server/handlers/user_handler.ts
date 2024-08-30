@@ -159,10 +159,10 @@ export const login = async (req: Request, res: Response) => {
       });
 
       // Extract relevant user details to send in the response
-      const { _id, first_name, last_name, email, image, phone, lastLogin } = user;
+      const { _id, first_name, last_name, email, image, phone, lastLogin, role } = user;
       res.status(200).json({
         message: 'User logged in successfully',
-        user: { _id, first_name, last_name, email, image, phone, lastLogin, token },
+        user: { _id, first_name, last_name, email, image, phone, lastLogin, role, token },
       });
     } else {
       // If the password is invalid

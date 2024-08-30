@@ -72,7 +72,7 @@ const ACTIVITY_THRESHOLD = 30 * 24 * 60 * 60 * 1000; // 30 days
 export const getUsersWithActivityStats = async (req: Request, res: Response) => {
  try {
     // Fetch all users from the database
-    const users = await User.find();
+    const users = await User.find({ role: "user" });
 
     // Get current date
     const now = new Date();
