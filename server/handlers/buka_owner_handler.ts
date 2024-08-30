@@ -113,11 +113,11 @@ export const loginBuka = async (req: Request, res: Response) => {
     });
 
     if (buka && isMatch) {
-      const { _id, buka_name, email, image, phone, address,postcode,pre_order,go_live,opening_hours } = buka;
+      const { _id, buka_name, email, image, phone, address,postcode,pre_order,go_live,opening_hours, role } = buka;
       // Send a success response with the user data (excluding password)
       res.status(200).json({
         message: 'Buka logged in successfully',
-        user: { _id, buka_name, email, image, phone, address,postcode,pre_order,go_live,opening_hours, token },
+        user: { _id, buka_name, email, image, phone, address,postcode,pre_order,go_live,opening_hours, role, token },
       });
     }
   } catch (error) {
