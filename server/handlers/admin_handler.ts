@@ -107,13 +107,15 @@ export const getUsersWithActivityStats = async (req: Request, res: Response) => 
 export const getBukaStats = async (req: Request, res: Response) => {
   try {
     // Get the total number of Bukas
-    const totalBukas = await Buka.countDocuments();
+    const totalBukas = await Buka.find({ role: "buka" });
 
     // Get the number of active Bukas (go_live: true)
     const activeBukas = await Buka.countDocuments({ go_live: true });
 
     // Get the number of pending Bukas (go_live: false)
     const pendingBukas = await Buka.countDocuments({ go_live: false });
+
+    const numberOfOrders = await Order.find();
 
     // Determine dormant Bukas (e.g., no recent orders in the last 30 days)
     const thirtyDaysAgo = new Date();
@@ -152,6 +154,7 @@ export const getBukaStats = async (req: Request, res: Response) => {
       dormantBukas,
       totalSales,
       totalCommission,
+      numberOfOrders,
     });
   } catch (error) {
     console.error(error);
@@ -159,17 +162,15 @@ export const getBukaStats = async (req: Request, res: Response) => {
   }
 };
 
-/*
- * @route   GET api/admin/orders
- * @desc    Get All Orders
- * @access  Private
- */
-
-export const getOrders = async (req: Request, res: Response) => {
+// Get all orders
+export const getAllOrderStats = async (req: Request, res: Response) => {
   try {
-    const orders = await Order.find();
+    const orders = await Order.find()
+      .populate('order_items.cuisine_id')
+      .populate('order_owner')
+      .populate('order_buka');
     res.status(200).json(orders);
   } catch (error) {
-    res.status(500).json({ message: 'Failed to fetch orders' });
+    res.status(500).json({ message: 'Something went wrong. Please try again...' });
   }
-}
+};
