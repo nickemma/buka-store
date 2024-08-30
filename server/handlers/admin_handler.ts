@@ -161,3 +161,16 @@ export const getBukaStats = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Failed to fetch buka stats' });
   }
 };
+
+// Get all orders
+export const getAllOrderStats = async (req: Request, res: Response) => {
+  try {
+    const orders = await Order.find()
+      .populate('order_items.cuisine_id')
+      .populate('order_owner')
+      .populate('order_buka');
+    res.status(200).json(orders);
+  } catch (error) {
+    res.status(500).json({ message: 'Something went wrong. Please try again...' });
+  }
+};
