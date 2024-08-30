@@ -75,6 +75,7 @@ import {
   updateOrder,
   deleteOrder,
   getAllOrders,
+  createCheckout,
 } from '../handlers/order_handler'
 import {protect} from '../middleware/auth';
 
@@ -202,6 +203,7 @@ router.delete('/delete/:id', protect, deleteOrder);
  *                 $ref: '#/components/schemas/Order'
  */
 router.get('/', protect, getAllOrders);
+router.post('/create-checkout-session', protect, createCheckout)
 
 export default router;
 

@@ -3,7 +3,6 @@ import User from '../models/user_model';
 import bcrypt from 'bcryptjs';
 import { Request, Response } from 'express';
 import AuthorizedRequest from '../types/request';
-
 /*
  * @desc    Generate a token
  * @access  Private
