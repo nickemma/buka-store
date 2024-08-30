@@ -84,7 +84,7 @@ const BukaOrders = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-center">
-              ${totalIncome.toFixed(2)}
+              ${totalIncome.toLocaleString()}
             </div>
           </CardContent>
         </Card>

@@ -9,10 +9,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import axios from "axios";
+
+const endpoint = "https://buka-store.vercel.app/api/users/logout";
 
 const UserNavbar = () => {
   const [preOrder, setPreOrder] = useState(false);
-  const [cookies, removeCookie] = useCookies(["user"]);
+  const [cookies] = useCookies(["user"]);
 
   const router = useNavigate();
   const handleToggle = () => {
@@ -21,6 +24,15 @@ const UserNavbar = () => {
 
   const isUserLoggedIn =
     cookies.user && cookies.user !== "undefined" && cookies.user !== null;
+
+  const logout = async () => {
+    try {
+      await axios.get(endpoint, {}, { withCredentials: true });
+      router("/login");
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="flex justify-between items-center px-3 py-4 ">
@@ -99,10 +111,7 @@ const UserNavbar = () => {
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 className="text-red-600 hover:text-red-600"
-                onClick={() => {
-                  removeCookie("user");
-                  router("/");
-                }}
+                onClick={logout}
               >
                 Logout
               </DropdownMenuItem>

@@ -36,7 +36,7 @@ export default function Login() {
           <form className="flex flex-col gap-4">
             <RadioGroup
               onValueChange={(value) => setRole(value)}
-              value={role}
+              defaultValue="user"
               className="flex"
             >
               <div className="flex items-center space-x-2">

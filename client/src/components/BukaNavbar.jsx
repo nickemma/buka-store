@@ -1,9 +1,12 @@
 import { Button } from "@/components/ui/button";
+import axios from "axios";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 
+const endpoint = "https://buka-store.vercel.app/api/users/logout";
+
 const BukaNavbar = () => {
-  const [cookies, removeCookie] = useCookies(["buka"]);
+  const [cookies] = useCookies(["buka"]);
   const navigate = useNavigate();
   const bukaData = cookies.buka;
 
@@ -12,6 +15,15 @@ const BukaNavbar = () => {
   const goLiveStatus =
     go_live === "true" ? true : go_live === "false" ? false : go_live;
   const statusColor = goLiveStatus ? "text-green-500" : "text-red-500";
+
+  const logout = async () => {
+    try {
+      await axios.get(endpoint, {}, { withCredentials: true });
+      navigate("/login");
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="flex justify-between items-center px-3 bg-white border-b">
@@ -38,14 +50,7 @@ const BukaNavbar = () => {
 
       {/* Right side */}
       <div>
-        <Button
-          onClick={() => {
-            removeCookie("user");
-            navigate("/login");
-          }}
-        >
-          Logout
-        </Button>
+        <Button onClick={logout}>Logout</Button>
       </div>
     </div>
   );

@@ -1,10 +1,22 @@
 import { Button } from "@/components/ui/button";
+import axios from "axios";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 
+const endpoint = "https://buka-store.vercel.app/api/users/logout";
+
 const AdminNavbar = () => {
-  const [cookies, removeCookie] = useCookies(["admin"]);
+  const [cookies] = useCookies(["admin"]);
   const navigate = useNavigate();
+
+  const logout = async () => {
+    try {
+      await axios.get(endpoint, {}, { withCredentials: true });
+      navigate("/login");
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="flex justify-between items-center px-3 bg-white border-b">
@@ -31,14 +43,7 @@ const AdminNavbar = () => {
 
       {/* Right side */}
       <div>
-        <Button
-          onClick={() => {
-            removeCookie("user");
-            navigate("/login");
-          }}
-        >
-          Logout
-        </Button>
+        <Button onClick={logout}>Logout</Button>
       </div>
     </div>
   );
