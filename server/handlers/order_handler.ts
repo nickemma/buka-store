@@ -1,5 +1,13 @@
 import { Request, Response } from 'express';
 import Order from '../models/order_model';
+import dotenv from 'dotenv';
+import Stripe from 'stripe';
+
+dotenv.config();
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
+  apiVersion: '2024-06-20',
+});
+
 
 // Create a new order
 export const createOrder = async (req: Request, res: Response) => {
@@ -72,3 +80,41 @@ export const getAllOrders = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Something went wrong. Please try again...' });
   }
 };
+
+/*
+ * @route   POST api/create-checkout
+ * @desc    Make a payment with stripe
+ * @access  Private
+ */
+
+export const createCheckout = async (req: Request, res: Response) => {
+  console.log('Body:', req.body);
+  try {
+  const session = await stripe.checkout.sessions.create({
+    payment_method_types: ['card'],
+    mode: "payment",
+    line_items: req.body?.map((item: any) => {
+      return {
+        price_data: {
+          currency: 'usd',
+          product_data: {
+            name: item.name,
+            images: [item.image],
+          },
+          unit_amount: item.price * 100,
+        },
+        quantity: item.quantity,
+      };
+    }),
+    success_url: 'http://localhost:5173/success',
+    cancel_url: 'http://localhost:5173/cancel',  
+  })
+
+  // Extract cuisine IDs from the request body
+    const cuisineIds = req.body?.map((item: any) => item?.cuisine_id);
+
+  res.json({ id: session.id, orderId: cuisineIds}); 
+  } catch (error: any) {
+    console.log(error.message)
+  }
+}
