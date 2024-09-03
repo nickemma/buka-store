@@ -12,7 +12,6 @@ import Cookies from "js-cookie";
 import { useUserStore } from "@/store/UserStore";
 
 const endpoint = "https://buka-store.vercel.app/api/orders/";
-// const endpoint = "http://localhost:5000/api/orders/";
 
 const CartCheckout = () => {
   // fetching cuisines from cookies
@@ -27,7 +26,6 @@ const CartCheckout = () => {
     0
   );
 
-  console.log(token);
   const makePayment = async () => {
     const stripe = await loadStripe(
       "pk_test_51MOfapIgrifBGT4dyD6usmKJYxwo1wVrP3Icn7qt0spq6ol8E3HANGZAazjf68mJ2UGMhuoogNe9HOEheedQ2m1V00VsKHfZbQ"

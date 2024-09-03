@@ -89,9 +89,6 @@ export const getAllOrders = async (req: Request, res: Response) => {
 
 export const createCheckout = async (req: Request, res: Response) => {
   try {
-    res.setHeader("Access-Control-Allow-Origin", "https://buka-store-rqvo.vercel.app");
-    res.setHeader("Access-Control-Allow-Credentials", "true");
-
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       mode: "payment",
