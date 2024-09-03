@@ -1,16 +1,17 @@
 import AdminHelpMessage from "@/components/AdminHelpMessage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useUserStore } from "@/store/UserStore";
 import axios from "axios";
+import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
-import { useCookies } from "react-cookie";
 
 const AdminUser = () => {
-  const [cookies] = useCookies(["admin"]);
+  const token = Cookies.get("user");
+  const { details } = useUserStore();
   const [currentDate, setCurrentDate] = useState("");
   const [error, setError] = useState("");
   const [data, setData] = useState([]);
 
-  const token = cookies?.admin?.token;
   const endpoint = `https://buka-store.vercel.app/api/admin/users`;
 
   const getUsersWithActivityStats = async () => {
@@ -48,7 +49,7 @@ const AdminUser = () => {
   return (
     <div className="p-6">
       <h1 className="text-3xl font-semibold mb-2">
-        Hey, {cookies?.admin?.first_name} {cookies?.admin?.last_name}
+        Hey, {details?.first_name} {details?.last_name}
       </h1>
       <p className="text-lg text-gray-600 mb-6">{currentDate}</p>
 

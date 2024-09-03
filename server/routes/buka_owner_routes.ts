@@ -92,6 +92,7 @@
 import express from 'express';
 import { registerBuka, loginBuka, getSingleBuka, updateBuka, getAllBukas, getBukaReviews } from '../handlers/buka_owner_handler';
 import {protect} from '../middleware/auth';
+import upload from '../middleware/multer';
 
 const router = express.Router();
 
@@ -201,7 +202,8 @@ router.get('/:id', protect, getSingleBuka);
  *       404:
  *         description: Buka not found
  */
-router.put('/:id', protect, updateBuka);
+router.put('/:id', protect, upload.single('image'), updateBuka);
+
 
 /**
  * @swagger

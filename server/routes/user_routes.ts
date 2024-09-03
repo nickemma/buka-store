@@ -49,8 +49,10 @@ import {
   getUser,
   updateUser,
   changePassword,
+  getUserRole
 } from '../handlers/user_handler';
 import {protect} from '../middleware/auth';
+import upload from '../middleware/multer';
 
 const router = express.Router();
 /**
@@ -72,7 +74,7 @@ const router = express.Router();
  *         description: Bad request
  */
 router.post('/signup', register);
-
+router.post("/role", getUserRole);
 /**
  * @swagger
  * /api/users/signin:
@@ -130,7 +132,7 @@ router.post('/signin', login);
  *       400:
  *         description: User not found
  */
-router.patch('/updateuser', protect, updateUser);
+router.put('/updateuser', protect, upload.single('image'), updateUser);
 
 /**
  * @swagger

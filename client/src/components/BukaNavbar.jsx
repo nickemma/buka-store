@@ -1,28 +1,21 @@
 import { Button } from "@/components/ui/button";
-import axios from "axios";
-import { useCookies } from "react-cookie";
+import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
-
-const endpoint = "https://buka-store.vercel.app/api/users/logout";
+import { useUserStore } from "@/store/UserStore";
+import { useEffect } from "react";
 
 const BukaNavbar = () => {
-  const [cookies] = useCookies(["buka"]);
+  const { details, validateToken } = useUserStore();
+  useEffect(() => {
+    // Validate the token when the component mounts
+    validateToken();
+  }, [validateToken]);
+
   const navigate = useNavigate();
-  const bukaData = cookies.buka;
 
-  const { buka_name, go_live } = bukaData;
-
-  const goLiveStatus =
-    go_live === "true" ? true : go_live === "false" ? false : go_live;
-  const statusColor = goLiveStatus ? "text-green-500" : "text-red-500";
-
-  const logout = async () => {
-    try {
-      await axios.get(endpoint, {}, { withCredentials: true });
-      navigate("/login");
-    } catch (error) {
-      console.log(error);
-    }
+  const logout = () => {
+    Cookies.remove("user");
+    navigate("/login");
   };
 
   return (
@@ -30,9 +23,13 @@ const BukaNavbar = () => {
       {/* Left side */}
       <div className="flex items-center">
         <div className="ml-4">
-          <div className="text-lg font-semibold">{buka_name}</div>
-          <div className={`text-sm ${statusColor}`}>
-            {goLiveStatus ? "Active" : "Not Active"}
+          <div className="text-lg font-semibold">{details?.buka_name}</div>
+          <div
+            className={`text-sm ${
+              details?.go_live ? "text-green-500 " : "text-red-500"
+            }`}
+          >
+            {details?.go_live ? "Active" : "Not Active"}
           </div>
         </div>
       </div>

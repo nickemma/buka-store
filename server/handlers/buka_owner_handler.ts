@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import Buka from '../models/buka_owner_model';
 import bcrypt from 'bcryptjs';
 import jwt, { Secret } from 'jsonwebtoken';
+import AuthorizedRequest from '../types/request';
 
 /*
  * @desc    Generate a token
@@ -152,16 +153,51 @@ export const getSingleBuka = async (req: Request, res: Response) => {
  */
 
 // Update a Buka by ID
-export const updateBuka = async (req: Request, res: Response) => {
-  const { id } = req.params;
-
+export const updateBuka = async (req: AuthorizedRequest<any>, res: Response) => {
   try {
-    const updatedBuka = await Buka.findByIdAndUpdate(id, req.body, { new: true });
-    if (!updatedBuka) {
+    const buka = await Buka.findByIdAndUpdate(req?.user?.id, req.body, { new: true });
+
+    if (!buka) {
       return res.status(404).json({ message: 'Buka not found' });
     }
 
-    res.json(updatedBuka);
+    let imageUrl = buka.image; // Default to the existing image URL
+    if (req.file) {
+      imageUrl = req.file.path; // The Cloudinary URL after upload
+    }
+
+    // Update user fields
+    buka.buka_name = req.body.buka_name || buka.buka_name;
+    buka.image = imageUrl; // Use the new or existing image URL
+    buka.phone = req.body.phone || buka.phone;
+    buka.address = req.body.address || buka.address;
+    buka.postcode = req.body.postcode || buka.postcode;
+    buka.pre_order = req.body.pre_order || buka.pre_order;
+    buka.go_live = req.body.go_live || buka.go_live;
+    buka.opening_hours = req.body.opening_hours || buka.opening_hours;
+
+    // Save the updated user
+    const updatedBuka = await buka.save();
+
+    // Generate a new token with the updated user data
+    const token = generateToken({ _id: updatedBuka._id.toString(), role: updatedBuka.role });
+
+     res.status(200).json({
+      message: 'buka updated successfully',
+      buka: {
+        _id: updatedBuka._id,
+        buka_name: updatedBuka.buka_name,
+        email: updatedBuka.email,
+        image: updatedBuka.image,
+        phone: updatedBuka.phone,
+        address: updatedBuka.address,
+        postcode: updatedBuka.postcode,
+        pre_order: updatedBuka.pre_order,
+        go_live: updatedBuka.go_live,
+        opening_hours: updatedBuka.opening_hours,
+        token,
+      },
+    });
   } catch (error) {
         res.status(500).json({ message: 'Something went wrong. Please try again...' });
   }

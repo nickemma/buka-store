@@ -1,17 +1,17 @@
 import useCuisine from "@/components/hooks/useCuisine";
 import { Card, CardContent } from "./ui/card";
 import { Carousel, CarouselContent, CarouselItem } from "./ui/carousel";
-import { Edit2Icon, Trash2Icon } from "lucide-react";
+import { Edit2Icon, PoundSterling, Trash2Icon } from "lucide-react";
 import AddItemForm from "./AddItemForm";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "sonner";
-import { useCookies } from "react-cookie";
 import EditItemForm from "./EditItemForm";
+import Cookies from "js-cookie";
 
 const AllProduct = () => {
   const { data } = useCuisine();
-  const [cookies] = useCookies(["buka"]);
+  const token = Cookies.get("user");
   const [localData, setLocalData] = useState(data);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -58,12 +58,17 @@ const AllProduct = () => {
   });
 
   const handleDelete = async (id) => {
+    const isConfirmed = window.confirm(
+      "Are you sure you want to delete this item?"
+    );
+    if (!isConfirmed) return; // Exit if not confirmed
+
     try {
       await axios.delete(`https://buka-store.vercel.app/api/cuisines/${id}`, {
         withCredentials: true,
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer " + cookies?.buka?.token,
+          Authorization: "Bearer " + token,
         },
       });
       setLocalData((prevData) => prevData?.filter((item) => item._id !== id));
@@ -76,7 +81,7 @@ const AllProduct = () => {
 
   return (
     <>
-      <div className="flex items-center gap-2 px-4 mt-6">
+      <div className="flex items-center gap-2 px-4 py-1 mt-56 border border-zinc-100">
         <h2 className="text-2xl font-semibold mb-4 border-r-4 px-2">
           All Items
         </h2>
@@ -116,15 +121,16 @@ const AllProduct = () => {
                           <h3 className="font-semibold text-[1.2rem] text-center">
                             {item?.cuisine_owner?.buka_name}
                           </h3>
-                          <p className="font-semibold text-[0.85rem] text-center">
+                          <p className="font-semibold text-[0.85rem] text-center mb-4">
                             {item?.cuisine_type}
                           </p>
                           <div className="flex items-center justify-between mb-6">
                             <h3 className="font-semibold text-[1rem]">
                               {item?.cuisine_name}
                             </h3>
-                            <div className="text-primary font-semibold">
-                              ${item?.price}
+                            <div className="text-primary font-semibold flex">
+                              <PoundSterling width={15} />
+                              {item?.price}
                             </div>
                           </div>
                           <div className="flex items-center justify-between mb-6">
@@ -153,11 +159,6 @@ const AllProduct = () => {
         ))}
       </div>
       {/* Modal Component */}
-      {/* <AddItemForm
-        isOpen={isModalOpen && !!selectedItem}
-        onClose={() => setIsModalOpen(false)}
-        onAddItem={handleAddItem}
-      /> */}
       {isModalOpen && (
         <AddItemForm
           isOpen={isModalOpen}
@@ -174,6 +175,7 @@ const AllProduct = () => {
           item={selectedItem}
         />
       )}
+      {/* Confirmation Modal Component */}
     </>
   );
 };

@@ -1,18 +1,21 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useUserStore } from "@/store/UserStore";
 import axios from "axios";
+import Cookies from "js-cookie";
+import { PoundSterling } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useCookies } from "react-cookie";
 
 const BukaOrders = () => {
-  const [cookies] = useCookies(["buka"]);
+  const { details } = useUserStore();
+  const token = Cookies.get("user");
+
   const [orders, setOrders] = useState([]);
   const [filteredOrders, setFilteredOrders] = useState([]);
   const [error, setError] = useState(null);
   const [currentDate, setCurrentDate] = useState("");
   const [displayedOrders, setDisplayedOrders] = useState(10);
 
-  const bukaId = cookies?.buka?._id;
-  const token = cookies?.buka?.token;
+  const bukaId = details?._id;
 
   const endpoint = `https://buka-store.vercel.app/api/orders`;
 
@@ -83,8 +86,9 @@ const BukaOrders = () => {
             <CardTitle className="text-lg font-medium">Total Income</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-center">
-              ${totalIncome.toLocaleString()}
+            <div className="text-2xl flex items-center justify-center font-bold text-center ">
+              <PoundSterling />
+              {totalIncome.toLocaleString()}
             </div>
           </CardContent>
         </Card>
@@ -125,7 +129,9 @@ const BukaOrders = () => {
               <th className="px-4 py-2 text-left border-r">
                 Order Description
               </th>
-              <th className="px-4 py-2 text-left border-r">Amount</th>
+              <th className="px-4 py-2 text-left border-r flex gap-1">
+                Amount (<PoundSterling width={15} />)
+              </th>
               <th className="px-4 py-2 text-left border-r">Order Status</th>
               <th className="px-4 py-2 text-left">Payment Method</th>
             </tr>
@@ -151,7 +157,7 @@ const BukaOrders = () => {
                   </div>
                 </td>
                 <td className="px-4 py-2 border-r">
-                  ${order.order_total.toFixed(2)}
+                  {order.order_total.toFixed(2)}
                 </td>
                 <td className="px-4 py-2 border-r">{order?.order_status}</td>
                 <td className="px-4 py-2">

@@ -1,14 +1,16 @@
 import { useState } from "react";
-import { useCookies } from "react-cookie";
 import PuffLoader from "react-spinners/PuffLoader";
 import axios from "axios";
 import { Button } from "./ui/button";
 import { toast } from "sonner";
+import Cookies from "js-cookie";
+import { useUserStore } from "@/store/UserStore";
 
 const endpoint = "https://buka-store.vercel.app/api/cuisines";
 
 const AddItemForm = ({ isOpen, onClose, onAddItem }) => {
-  const [cookies] = useCookies(["buka"]);
+  const token = Cookies.get("user");
+  const { details } = useUserStore();
 
   const [cuisineName, setCuisineName] = useState("");
   const [description, setDescription] = useState("");
@@ -66,14 +68,14 @@ const AddItemForm = ({ isOpen, onClose, onAddItem }) => {
       formData.append("other_category", otherCategory);
     }
     formData.append("ready_time_unit", readyTimeUnit);
-    formData.append("cuisine_owner", cookies?.buka?._id);
+    formData.append("cuisine_owner", details?._id);
 
     try {
       const response = await axios.post(endpoint, formData, {
         withCredentials: true,
         headers: {
           "Content-Type": "multipart/form-data",
-          Authorization: "Bearer " + cookies?.buka?.token,
+          Authorization: "Bearer " + token,
         },
       });
       if (response.status === 201) {

@@ -3,6 +3,7 @@ import User from '../models/user_model';
 import bcrypt from 'bcryptjs';
 import { Request, Response } from 'express';
 import AuthorizedRequest from '../types/request';
+import Buka from '../models/buka_owner_model';
 /*
  * @desc    Generate a token
  * @access  Private
@@ -25,10 +26,14 @@ const generateToken = (user: { _id: string; role: string }) => {
 
 export const getUser = async (req: AuthorizedRequest<any>, res: Response) => {
   try {
-    const user = await User.findById(req?.user?.id).select('-password');
+    let user; 
+    if(req.user?.role === "user" || req.user?.role === "admin"){
+      user = await User.findById(req?.user?.id).select('-password');
+    } else {
+      user = await Buka.findById(req?.user?.id).select('-password');
+    }
     if (user) {
-      const { _id, first_name, last_name, email, image, phone } = user;
-      res.status(200).json({ _id, first_name, last_name, email, image, phone });
+      res.status(200).json(user)
     } else {
       res.status(400).json({ message: 'User not found' });
     }
@@ -185,29 +190,40 @@ export const updateUser = async (
 ) => {
   try {
     const user = await User.findById(req?.user?.id);
-    if (user) {
-      const { first_name, last_name, email, image, phone } = user;
-      user.email = email;
-      user.first_name = req.body.first_name || first_name;
-      user.last_name = req.body.last_name || last_name;
-      user.image = req.body.image || image;
-      user.phone = req.body.phone || phone;
 
-      const updatedUser = await user.save();
-      res.status(200).json({
-        message: 'User updated successfully',
-        user : {
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    let imageUrl = user.image; // Default to the existing image URL
+    if (req.file) {
+      imageUrl = req.file.path; // The Cloudinary URL after upload
+    }
+
+    // Update user fields
+    user.first_name = req.body.first_name || user.first_name;
+    user.last_name = req.body.last_name || user.last_name;
+    user.image = imageUrl; // Use the new or existing image URL
+    user.phone = req.body.phone || user.phone;
+
+    // Save the updated user
+    const updatedUser = await user.save();
+
+    // Generate a new token with the updated user data
+    const token = generateToken({ _id: updatedUser._id.toString(), role: updatedUser.role });
+
+     res.status(200).json({
+      message: 'User updated successfully',
+      user: {
         _id: updatedUser._id,
         first_name: updatedUser.first_name,
         last_name: updatedUser.last_name,
         email: updatedUser.email,
         image: updatedUser.image,
         phone: updatedUser.phone,
-        }
-      });
-    } else {
-      res.status(400).json({ message: 'User not found' });
-    }
+        token,
+      },
+    });
   } catch (error: any) {
     res.status(500).json({ message: 'Something went wrong. Please try again...' });
   }
@@ -263,5 +279,32 @@ export const changePassword = async (
  */
 
 export const logout = async (req: Request, res: Response) => {
-  res.clearCookie('token').json({ message: 'Logged out successfully' });
+  // Clear all relevant cookies
+  res.clearCookie('user', { path: '/' });
+  res.clearCookie('buka', { path: '/' });
+  res.clearCookie('admin', { path: '/' });
+  res.clearCookie('token', { path: '/' });
+
+  // Respond with a success message
+  res.json({ message: 'Logged out successfully' });
+};
+
+export const getUserRole = async (req: Request, res: Response) => {
+  const { email } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      const buka = await Buka.findOne({ email });
+      if (!buka) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      return res.status(200).json({ role: buka.role });
+    }
+
+    res.status(200).json({ role: user.role });
+  } catch (error) {
+    res.status(500).json({ message: "Something went wrong" });
+  }
 };

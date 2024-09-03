@@ -1,16 +1,17 @@
 import AdminBukaTable from "@/components/AdminBukaTable";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useUserStore } from "@/store/UserStore";
 import axios from "axios";
-import { Euro } from "lucide-react";
+import Cookies from "js-cookie";
+import { PoundSterling } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useCookies } from "react-cookie";
 
 const AdminBuka = () => {
-  const [cookies] = useCookies(["admin"]);
+  const token = Cookies.get("user");
+  const { details } = useUserStore();
   const [currentDate, setCurrentDate] = useState("");
   const [data, setData] = useState([]);
 
-  const token = cookies?.admin?.token;
   const endpoint = `https://buka-store.vercel.app/api/admin/bukas`;
 
   const getAdminStats = async () => {
@@ -47,7 +48,7 @@ const AdminBuka = () => {
   return (
     <div className="p-6">
       <h1 className="text-3xl font-semibold mb-2">
-        Hey, {cookies?.admin?.first_name} {cookies?.admin?.last_name}
+        Hey, {details?.first_name} {details?.last_name}
       </h1>
       <p className="text-lg text-gray-600 mb-6">{currentDate}</p>
 
@@ -114,7 +115,7 @@ const AdminBuka = () => {
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-center gap-2 text-2xl font-bold text-center ">
-              <Euro />
+              <PoundSterling />
               {data?.totalCommission?.toLocaleString()}
             </div>
           </CardContent>

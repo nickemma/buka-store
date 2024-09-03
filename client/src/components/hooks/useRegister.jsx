@@ -2,7 +2,7 @@
 import axios from "axios";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-import { useCookies } from "react-cookie";
+import Cookies from "js-cookie"
 
 const endpoint = "https://buka-store.vercel.app/api/users/";
 const buka_endpoint = "https://buka-store.vercel.app/api/bukas/";
@@ -17,8 +17,6 @@ export const useRegister = (
   bukaName
 ) => {
   const navigate = useNavigate();
-  const [cookies, setCookie] = useCookies(["user", "buka"]);
-  console.log(cookies);
   const handleRegister = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -38,8 +36,8 @@ export const useRegister = (
         );
 
         toast.success(res?.data?.message);
-        setCookie("user", JSON.stringify(res.data));
-        navigate("/");
+        Cookies.set("user", res.data?.user?.token);
+        navigate("/login");
       } else {
         if (!bukaName || !email || !password) {
           toast.error("All fields are required");
@@ -54,8 +52,8 @@ export const useRegister = (
         );
 
         toast.success(res?.data?.message);
-        setCookie("buka", JSON.stringify(res.data));
-        navigate("/buka");
+        Cookies.set("user", res.data?.user?.token);
+        navigate("/login");
       }
     } catch (err) {
       console.log(err);

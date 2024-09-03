@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { useCookies } from "react-cookie";
+import Cookies from "js-cookie";
 import { Link, useNavigate } from "react-router-dom";
 import {
   DropdownMenu,
@@ -9,33 +9,39 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import axios from "axios";
-
-const endpoint = "https://buka-store.vercel.app/api/users/logout";
+import { useUserStore } from "@/store/UserStore";
+import { ShoppingBasket } from "lucide-react";
+import { useCartStore } from "@/store/CartStore";
 
 const UserNavbar = () => {
   const [preOrder, setPreOrder] = useState(false);
-  const [cookies] = useCookies(["user"]);
+  const { details, validateToken } = useUserStore();
+
+  const { cart } = useCartStore();
+
+  useEffect(() => {
+    // Validate the token when the component mounts
+    validateToken();
+  }, [validateToken]);
 
   const router = useNavigate();
   const handleToggle = () => {
     setPreOrder(!preOrder);
   };
 
-  const isUserLoggedIn =
-    cookies.user && cookies.user !== "undefined" && cookies.user !== null;
-
-  const logout = async () => {
-    try {
-      await axios.get(endpoint, {}, { withCredentials: true });
-      router("/login");
-    } catch (error) {
-      console.log(error);
-    }
+  const logout = () => {
+    Cookies.remove("user");
+    router("/login");
   };
 
+  // Calculate the total number of items in the cart
+  const totalItemsInCart = cart.reduce(
+    (total, item) => total + item.quantity,
+    0
+  );
+
   return (
-    <div className="flex justify-between items-center px-3 py-4 ">
+    <div className="flex justify-between items-center px-10 py-2 ">
       <Link to="/">
         <div>
           <img src="/buka-logo.png" width="120" />
@@ -44,39 +50,43 @@ const UserNavbar = () => {
 
       <div className="flex items-center gap-3  ">
         <div
-          className={`relative w-32 h-10 rounded-full p-1 cursor-pointer transition-all duration-300 ${
-            preOrder ? "bg-green-600" : "bg-gray-300"
-          }`}
+          className="relative w-40 h-10 rounded-full cursor-pointer transition-all duration-300 bg-gray-300 flex justify-between"
           onClick={handleToggle}
         >
-          <div
-            className={`absolute w-1/2 h-[80%] rounded-full bg-white transition-transform duration-300 ${
-              preOrder ? "translate-x-full" : "translate-x-0"
-            }`}
-          ></div>
           <span
-            className={`absolute inset-0 flex items-center justify-center font-medium transition-opacity duration-300 ${
-              preOrder ? "opacity-0" : "opacity-100"
-            }`}
-          >
-            Order Now
-          </span>
-          <span
-            className={`absolute inset-0 flex items-center justify-center font-medium transition-opacity duration-300 ${
-              preOrder ? "opacity-100" : "opacity-0"
+            className={`flex-1 text-center rounded-full py-2 transition-colors duration-300 ${
+              preOrder ? "bg-green-600 text-white" : "bg-gray-300 text-black"
             }`}
           >
             Pre-Order
           </span>
+          <span
+            className={`flex-1 text-center rounded-full py-2 transition-colors duration-300 ${
+              preOrder ? "bg-gray-300 text-black" : "bg-green-600 text-white"
+            }`}
+          >
+            Order Now
+          </span>
         </div>
 
+        <Link
+          to="/user/checkout"
+          className=" flex justify-center items-center rounded md text-[1.2rem] text-black relative"
+        >
+          <ShoppingBasket />
+          {totalItemsInCart > 0 && (
+            <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
+              {totalItemsInCart}
+            </span>
+          )}
+        </Link>
         <Link
           to="/cuisine"
           className=" flex justify-center items-center rounded md text-[1.2rem] text-black  "
         >
           Catering
         </Link>
-        {isUserLoggedIn ? (
+        {details ? (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <div className="flex items-center gap-1">
@@ -85,13 +95,10 @@ const UserNavbar = () => {
                   size="icon"
                   className="rounded-full"
                 >
-                  <img
-                    src={cookies?.user?.image}
-                    className="h-5 w-5 rounded-full"
-                  />
+                  <img src={details?.image} className="h-5 w-5 rounded-full" />
                 </Button>
                 <span className="hidden md:block text-sm font-medium">
-                  {cookies?.user?.first_name}
+                  {details?.first_name}
                 </span>
               </div>
             </DropdownMenuTrigger>
@@ -99,11 +106,7 @@ const UserNavbar = () => {
               <DropdownMenuItem>
                 {" "}
                 <Link
-                  to={
-                    cookies?.user?.first_name
-                      ? "/user/settings"
-                      : "/buka/settings"
-                  }
+                  to={details?.first_name ? "/user/settings" : "/buka/settings"}
                 >
                   Profile
                 </Link>

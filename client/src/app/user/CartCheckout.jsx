@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
-import { useCookies } from "react-cookie";
 import { MinusCircle, PlusCircle } from "lucide-react";
 import axios from "axios";
 import PuffLoader from "react-spinners/PuffLoader";
@@ -9,15 +8,16 @@ import { Link } from "react-router-dom";
 import { useCartStore } from "@/store/CartStore";
 import { loadStripe } from "@stripe/stripe-js";
 import { toast } from "sonner";
+import Cookies from "js-cookie";
+import { useUserStore } from "@/store/UserStore";
 
 const endpoint = "https://buka-store.vercel.app/api/orders/";
-// const endpoint = "http://localhost:5000/api/orders/";
 
 const CartCheckout = () => {
   // fetching cuisines from cookies
-  const [cookies] = useCookies(["user"]);
+  const token = Cookies.get("user");
+  const { details } = useUserStore();
   // fetching user information from cookies
-  const userJson = cookies?.user;
   const [loading, setLoading] = useState(false);
   const { cart, incrementItem, decrementItem } = useCartStore();
 
@@ -35,7 +35,7 @@ const CartCheckout = () => {
     try {
       const response = await axios.post(
         endpoint + `create-checkout-session`,
-        cart.map((item) => ({
+        cart?.map((item) => ({
           cuisine_id: item._id,
           name: item?.cuisine_name,
           image: item?.image,
@@ -45,7 +45,7 @@ const CartCheckout = () => {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${userJson?.token}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -78,7 +78,7 @@ const CartCheckout = () => {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: "Bearer " + userJson?.token,
+            Authorization: "Bearer " + token,
           },
         }
       )
@@ -179,12 +179,12 @@ const CartCheckout = () => {
             <div className=" flex justify-between">
               <p className="font-bold">Full Name</p>{" "}
               <span className="text-primary">
-                {userJson?.first_name + " " + userJson?.last_name}
+                {details?.first_name + " " + details?.last_name}
               </span>
             </div>
             <div className=" flex justify-between">
               <p className="font-bold">Email</p>{" "}
-              <span className="text-primary">{userJson?.email}</span>
+              <span className="text-primary">{details?.email}</span>
             </div>
             <div className=" flex justify-between">
               <Button className="w-full mt-6" onClick={makePayment}>

@@ -1,51 +1,42 @@
+import { toast } from "sonner";
 import { create } from "zustand";
 
-// export const useCartStore = create((set) => ({
-//   cart: [],
-//   addToCart: (item) =>
-//     set((state) => ({
-//       cart: [...state.cart, item],
-//     })),
-//   removeFromCart: (itemId) =>
-//     set((state) => ({
-//       cart: state.cart.filter((i) => i.id !== itemId),
-//     })),
-//   incrementItem: (itemId) =>
-//     set((state) => ({
-//       cart: state.cart.map((i) => {
-//         if (i.id === itemId) {
-//           return { ...i, quantity: i.quantity + 1 };
-//         }
-//         return i;
-//       }),
-//     })),
-//   decrementItem: (itemId) =>
-//     set((state) => ({
-//       cart: state.cart.map((i) => {
-//         if (i.id === itemId) {
-//           return { ...i, quantity: i.quantity - 1 };
-//         }
-//         return i;
-//       }),
-//     })),
-// }));
-
 export const useCartStore = create((set) => ({
-  cart: JSON.parse(localStorage.getItem("cart")) || [],
+  // cart: JSON.parse(localStorage.getItem("cart")) || [],
+  cart: [],
+  bukaOwner: null,
+
   addToCart: (item) =>
     set((state) => {
       const existingItem = state.cart.find((i) => i._id === item._id);
-      if (existingItem) {
-        return {
-          cart: state.cart.map((i) =>
+      // Check if the cart is empty or if the item belongs to the same bukaOwner
+      if (!state.bukaOwner || state.bukaOwner === item.cuisine_owner._id) {
+        if (existingItem) {
+          const updatedCart = state.cart.map((i) =>
             i._id === item._id
               ? { ...i, quantity: i.quantity + item.quantity }
               : i
-          ),
+          );
+          localStorage.setItem("cart", JSON.stringify(updatedCart));
+          return { cart: updatedCart };
+        }
+        // Otherwise, add the item to the cart
+        const updatedCart = [...state.cart, item];
+        localStorage.setItem("cart", JSON.stringify(updatedCart));
+
+        // Set bukaOwner if it's not already set
+        if (!state.bukaOwner) {
+          localStorage.setItem("bukaOwner", item.cuisine_owner._id);
+        }
+
+        return {
+          cart: updatedCart,
+          bukaOwner: state.bukaOwner || item.cuisine_owner._id,
         };
       }
-      localStorage.setItem("cart", JSON.stringify([...state.cart, item]));
-      return { cart: [...state.cart, item] };
+      // If bukaOwner doesn't match, do not add the item and alert the user
+      toast.info("You can only add items from one Buka at a time.");
+      return state;
     }),
   incrementItem: (id) =>
     set((state) => {
@@ -65,4 +56,11 @@ export const useCartStore = create((set) => ({
       localStorage.setItem("cart", JSON.stringify(updatedCart));
       return { cart: updatedCart };
     }),
+
+  // Clear the cart and reset bukaOwner
+  clearCart: () => {
+    localStorage.removeItem("cart");
+    localStorage.removeItem("bukaOwner");
+    return { cart: [], bukaOwner: null };
+  },
 }));

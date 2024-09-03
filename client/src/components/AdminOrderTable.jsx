@@ -1,14 +1,13 @@
 import axios from "axios";
+import Cookies from "js-cookie";
+import { PoundSterling } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useCookies } from "react-cookie";
 
 const AdminOrderTable = () => {
-  const [cookies] = useCookies(["admin"]);
+  const token = Cookies.get("user");
   const [orders, setOrders] = useState([]);
-  const [itemsPerPage] = useState(2);
+  const [itemsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
-
-  const token = cookies?.admin?.token;
 
   const endpoint = `https://buka-store.vercel.app/api/admin/orders`;
 
@@ -62,33 +61,36 @@ const AdminOrderTable = () => {
             <th className="px-4 py-2 text-left border-r">Order Date</th>
             <th className="px-4 py-2 text-left border-r">Order Time</th>
             <th className="px-4 py-2 text-left border-r">Order Description</th>
-            <th className="px-4 py-2 text-left border-r">Amount</th>
+            <th className="px-4 py-2 text-left border-r flex ">
+              Amount (
+              <PoundSterling />)
+            </th>
             <th className="px-4 py-2 text-left border-r">Order Status</th>
             <th className="px-4 py-2 text-left">Payment Method</th>
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
           {currentOrders?.map((order, index) => (
-            <tr key={order._id} className="border-b">
+            <tr key={order?._id} className="border-b">
               <td className="px-4 py-2 border-r"> {startIndex + index + 1}</td>
               <td className="px-4 py-2 border-r">
-                {new Date(order.createdAt).toLocaleDateString()}
+                {new Date(order?.createdAt).toLocaleDateString()}
               </td>
               <td className="px-4 py-2 border-r">
-                {new Date(order.createdAt).toLocaleTimeString()}
+                {new Date(order?.createdAt).toLocaleTimeString()}
               </td>
               <td className="px-4 py-2 border-r">
                 <div className="flex flex-col">
-                  {order.order_items.map((item) => (
-                    <div key={item._id} className="flex justify-between py-1">
-                      <span>{item.cuisine_id?.cuisine_name}</span>
+                  {order?.order_items?.map((item) => (
+                    <div key={item?._id} className="flex justify-between py-1">
+                      <span>{item?.cuisine_id?.cuisine_name}</span>
                       <span>{item?.quantity}</span>
                     </div>
                   ))}
                 </div>
               </td>
               <td className="px-4 py-2 border-r">
-                ${order.order_total.toLocaleString()}
+                {order?.order_total?.toLocaleString()}
               </td>
               <td className="px-4 py-2 border-r">{order?.order_status}</td>
               <td className="px-4 py-2">

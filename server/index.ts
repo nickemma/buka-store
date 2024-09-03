@@ -17,6 +17,7 @@ import orderRoutes from './routes/order_routes';
 import reviewRoutes from './routes/review_routes';
 import helpCenterRoutes from './routes/help_center_routes';
 import adminRoutes from './routes/admin_routes';
+import getUserRole from './routes/user_routes';
 
 const app = express();
 
@@ -46,6 +47,8 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/review', reviewRoutes);
 app.use('/api/help_center', helpCenterRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/admin', adminRoutes);
+app.use("/api/users", getUserRole);
 
 //============= Swagger UI Docs
 const options = {

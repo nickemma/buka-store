@@ -1,15 +1,15 @@
 import { useState } from "react";
 import { Dialog } from "@/components/ui/dialog";
-import { useCookies } from "react-cookie";
 import PuffLoader from "react-spinners/PuffLoader";
 import axios from "axios";
 import { DialogOverlay, DialogTitle } from "@radix-ui/react-dialog";
 import { Button } from "./ui/button";
+import Cookies from "js-cookie";
 
 const endpoint = "https://buka-store.vercel.app/api/review";
 
 const ReviewForm = ({ bukaId, isOpen, onClose, setIsModalOpen }) => {
-  const [cookies] = useCookies(["user"]);
+  const token = Cookies.get("user");
   const [comment, setComment] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -17,6 +17,11 @@ const ReviewForm = ({ bukaId, isOpen, onClose, setIsModalOpen }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (comment.trim() === "") {
+      setError("Review cannot be empty");
+      return;
+    }
 
     try {
       const response = await axios.post(
@@ -26,7 +31,7 @@ const ReviewForm = ({ bukaId, isOpen, onClose, setIsModalOpen }) => {
           withCredentials: true,
           headers: {
             "Content-Type": "application/json",
-            Authorization: "Bearer " + cookies?.user?.token,
+            Authorization: "Bearer " + token,
           },
         }
       );
@@ -41,24 +46,18 @@ const ReviewForm = ({ bukaId, isOpen, onClose, setIsModalOpen }) => {
     }
   };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setError("");
-    setSuccess("");
-  };
-
   return (
     <>
       {isOpen && (
         <Dialog
           open={isOpen}
-          onClose={closeModal}
+          onOpenChange={onClose}
           className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto"
         >
           <DialogOverlay className="fixed inset-0 bg-black opacity-50" />
           <div className="bg-white w-full max-w-lg mx-auto p-6 rounded-md shadow-lg z-10">
             <DialogTitle className="text-lg font-bold mb-4">
-              Write a Review
+              Leave a Review
             </DialogTitle>
             <form onSubmit={handleSubmit}>
               <textarea
@@ -82,7 +81,7 @@ const ReviewForm = ({ bukaId, isOpen, onClose, setIsModalOpen }) => {
             {error && <p className="text-red-500 mt-2">{error}</p>}
             {success && <p className="text-green-500 mt-2">{success}</p>}
             <button
-              onClick={closeModal}
+              onClick={onClose}
               className="mt-4 text-green-500 hover:underline"
             >
               Close

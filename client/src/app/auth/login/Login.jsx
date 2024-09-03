@@ -7,16 +7,13 @@ import PuffLoader from "react-spinners/PuffLoader";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Link } from "react-router-dom";
 
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@radix-ui/react-label";
 
 export default function Login() {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
-  const [role, setRole] = useState("user");
-
-  const { handleLogin } = useLogin(email, password, setLoading, role);
+  const { handleLogin } = useLogin(email, password, setLoading);
 
   return (
     <section className="h-screen flex justify-center items-center">
@@ -34,26 +31,8 @@ export default function Login() {
             Welcome back!
           </p>
           <form className="flex flex-col gap-4">
-            <RadioGroup
-              onValueChange={(value) => setRole(value)}
-              defaultValue="user"
-              className="flex"
-            >
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="user" id="r2" />
-                <Label htmlFor="r2">User</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="buka" id="r3" />
-                <Label htmlFor="r3">Buka</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="admin" id="r3" />
-                <Label htmlFor="r3">Admin</Label>
-              </div>
-            </RadioGroup>
             <div>
-              <abel>Email</abel>
+              <Label>Email</Label>
               <Input
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -61,7 +40,7 @@ export default function Login() {
               />
             </div>
             <div>
-              <abel>Password</abel>
+              <Label>Password</Label>
               <Input
                 type="password"
                 placeholder="Enter your password"

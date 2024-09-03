@@ -1,3 +1,4 @@
+import { PoundSterling } from "lucide-react";
 import { useState } from "react";
 
 // Utility function to calculate totals
@@ -99,14 +100,20 @@ const AdminBukaTable = ({ bukaData, orderData }) => {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 border-r border-b border-gray-300">
                         {totalOrders}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 border-r border-b border-gray-300">
-                        ${totalSales.toFixed(2)}
+                      <td className="px-6 flex gap-1 py-4 whitespace-nowrap text-sm text-gray-500 border-r border-b border-gray-300">
+                        <PoundSterling width={15} /> {totalSales?.toFixed(2)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 border-r border-b border-gray-300">
-                        ${commission.toFixed(2)}
+                        {commission?.toFixed(2)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 border-b border-gray-300">
-                        {buka?.go_live ? "Active" : "Not Active"}
+                        <span
+                          className={
+                            buka?.go_live ? "text-green-500" : "text-red-500"
+                          }
+                        >
+                          {buka?.go_live ? "Active" : "Not Active"}
+                        </span>
                       </td>
                     </tr>
                   );

@@ -1,13 +1,12 @@
 import axios from "axios";
+import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
-import { useCookies } from "react-cookie";
 
 const endpoint = `https://buka-store.vercel.app/api/review`;
 
 const GetReviews = () => {
-  const [cookies] = useCookies(["buka"]);
+  const token = Cookies.get("user");
   const [reviews, setReviews] = useState([]);
-  const token = cookies?.buka?.token;
 
   const fetchReviews = async () => {
     try {

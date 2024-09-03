@@ -32,8 +32,9 @@ export const createCuisine = async (req: Request, res: Response) => {
 
     await newCuisine.save();
     res.status(201).json(newCuisine);
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({ message: 'Failed to create cuisine', error });
+    console.log(error.message);
   }
 };
 

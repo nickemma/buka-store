@@ -1,8 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import axios from "axios";
-import { Euro } from "lucide-react";
+import { PoundSterling } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useCookies } from "react-cookie";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -14,6 +13,8 @@ import {
   Legend,
 } from "chart.js";
 import AdminOrderTable from "@/components/AdminOrderTable";
+import Cookies from "js-cookie";
+import { useUserStore } from "@/store/UserStore";
 
 // Register chart components
 ChartJS.register(
@@ -26,11 +27,11 @@ ChartJS.register(
 );
 
 const AdminTransaction = () => {
-  const [cookies] = useCookies(["admin"]);
+  const token = Cookies.get("user");
+  const { details } = useUserStore();
   const [currentDate, setCurrentDate] = useState("");
   const [data, setData] = useState(null);
 
-  const token = cookies?.admin?.token;
   const endpoint = `https://buka-store.vercel.app/api/admin/dashboard`;
 
   const getAdminStats = async () => {
@@ -105,7 +106,7 @@ const AdminTransaction = () => {
   return (
     <div className="p-6">
       <h1 className="text-3xl font-semibold mb-2">
-        Hey, {cookies?.admin?.first_name} {cookies?.admin?.last_name}
+        Hey, {details?.first_name} {details?.last_name}
       </h1>
       <p className="text-lg text-gray-600 mb-6">{currentDate}</p>
 
@@ -131,7 +132,7 @@ const AdminTransaction = () => {
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-center gap-2 text-2xl font-bold text-center ">
-              <Euro />
+              <PoundSterling />
               {data?.data?.totalCommission.toLocaleString()}
             </div>
           </CardContent>
@@ -144,7 +145,7 @@ const AdminTransaction = () => {
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-center gap-2 text-2xl font-bold text-center ">
-              <Euro />
+              <PoundSterling />
               {data?.data?.totalSalesMade.toLocaleString()}
             </div>
           </CardContent>

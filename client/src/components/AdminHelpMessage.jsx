@@ -1,14 +1,13 @@
 import axios from "axios";
+import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
-import { useCookies } from "react-cookie";
 
 const AdminHelpMessage = () => {
-  const [cookies] = useCookies(["admin"]);
+  const token = Cookies.get("user");
   const [data, setData] = useState([]);
   const [visibleCount, setVisibleCount] = useState(5);
   const [hasMore, setHasMore] = useState(false);
 
-  const token = cookies?.admin?.token;
   const endpoint = `https://buka-store.vercel.app/api/help_center/admin/messages`;
 
   const getMessages = async () => {
@@ -45,21 +44,21 @@ const AdminHelpMessage = () => {
         <h2 className="text-3xl font-semibold mb-6 text-gray-800">
           Customer Help Line
         </h2>
-        {data.length > 0 ? (
-          data.slice(0, visibleCount).map((item) => (
+        {data?.length > 0 ? (
+          data?.slice(0, visibleCount).map((item) => (
             <div key={item._id} className="bg-white shadow rounded-lg p-6 mb-6">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center">
                   <img
-                    src={item.user.image}
-                    alt={`${item.user.first_name} ${item.user.last_name}`}
+                    src={item?.user.image}
+                    alt={`${item?.user?.first_name} ${item?.user?.last_name}`}
                     className="w-12 h-12 rounded-full mr-4"
                   />
                   <div>
                     <h3 className="text-lg font-medium text-gray-900">
-                      {`${item.user.first_name} ${item.user.last_name}`}
+                      {`${item?.user?.first_name} ${item?.user?.last_name}`}
                     </h3>
-                    <p className="text-sm text-gray-600">{item.user.email}</p>
+                    <p className="text-sm text-gray-600">{item?.user?.email}</p>
                   </div>
                 </div>
                 <div className="text-right">

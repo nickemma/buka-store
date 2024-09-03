@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
-import { useCookies } from "react-cookie";
 import PuffLoader from "react-spinners/PuffLoader";
 import axios from "axios";
 import { Button } from "./ui/button";
 import { toast } from "sonner";
+import Cookies from "js-cookie";
+import { useUserStore } from "@/store/UserStore";
 
 const EditItemForm = ({ isOpen, onClose, onUpdateItem, item }) => {
-  const [cookies] = useCookies(["buka"]);
+  const token = Cookies.get("user");
+  const { details } = useUserStore();
 
   const [cuisineName, setCuisineName] = useState("");
   const [description, setDescription] = useState("");
@@ -36,18 +38,6 @@ const EditItemForm = ({ isOpen, onClose, onUpdateItem, item }) => {
       setImagePreview(item?.image || "");
     }
   }, [item, isOpen]);
-
-  const resetForm = () => {
-    setCuisineName("");
-    setDescription("");
-    setImage(null);
-    setImagePreview("");
-    setPrice("");
-    setCuisineType("");
-    setCuisineCategory("");
-    setOtherCategory("");
-    setReadyTimeUnit("");
-  };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -80,21 +70,20 @@ const EditItemForm = ({ isOpen, onClose, onUpdateItem, item }) => {
       formData.append("other_category", otherCategory);
     }
     formData.append("ready_time_unit", readyTimeUnit);
-    formData.append("cuisine_owner", cookies?.buka?._id);
+    formData.append("cuisine_owner", details?._id);
 
     try {
       const response = await axios.put(endpoint, formData, {
         withCredentials: true,
         headers: {
           "Content-Type": "multipart/form-data",
-          Authorization: "Bearer " + cookies?.buka?.token,
+          Authorization: "Bearer " + token,
         },
       });
       if (response.status === 200) {
         setLoading(false);
         toast.success("Cuisine updated successfully");
         setSuccess("Cuisine updated successfully");
-        resetForm();
         onUpdateItem(response.data);
         onClose();
       }

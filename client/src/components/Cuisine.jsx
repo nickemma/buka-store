@@ -19,14 +19,19 @@ function Cuisines() {
       item?.cuisine_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item?.cuisine_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const filteredData = filteredRestaurants?.filter(
+    (item) => item?.cuisine_owner?.go_live
+  );
+
   return (
     <div>
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-8 text-center">
-          Explore Cuisines and Restaurants
+          Explore Meals and Buka&apos;s
         </h1>
         <div className="flex justify-center mb-6">
-          <div className="relative flex items-center">
+          <div className="relative flex items-center mb-6">
             <Search className="absolute left-1 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <Input
               type="search"
@@ -41,8 +46,8 @@ function Cuisines() {
           </div>
         </div>
         <div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {filteredRestaurants.slice(0, visibleCount).map((item) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 px-10">
+            {filteredData?.slice(0, visibleCount).map((item) => (
               <ProductCard item={item} key={item?._id} />
             ))}
           </div>

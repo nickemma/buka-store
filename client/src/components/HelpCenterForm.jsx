@@ -1,14 +1,14 @@
 import { useState } from "react";
-import { useCookies } from "react-cookie";
 import PuffLoader from "react-spinners/PuffLoader";
 import axios from "axios";
 import { Button } from "./ui/button";
 import { toast } from "sonner";
+import Cookies from "js-cookie";
 
 const endpoint = "https://buka-store.vercel.app/api/help_center/send";
 
 const HelpCenterForm = ({ isOpen, onClose }) => {
-  const [cookies] = useCookies(["user"]);
+  const token = Cookies.get("user");
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
@@ -34,7 +34,7 @@ const HelpCenterForm = ({ isOpen, onClose }) => {
           withCredentials: true,
           headers: {
             "Content-Type": "application/json",
-            Authorization: "Bearer " + cookies?.user?.token,
+            Authorization: "Bearer " + token,
           },
         }
       );
@@ -57,7 +57,7 @@ const HelpCenterForm = ({ isOpen, onClose }) => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white w-full max-w-lg mx-auto p-6 rounded-md shadow-lg">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-bold mb-4">Write a Review</h2>
+              <h2 className="text-lg font-bold mb-4">Leave a Complaint</h2>
               <button
                 onClick={onClose}
                 className="text-green-500 hover:underline text-lg"
@@ -75,7 +75,7 @@ const HelpCenterForm = ({ isOpen, onClose }) => {
               <textarea
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                placeholder="Write your review here"
+                placeholder="Leave your complaint here"
                 rows="4"
                 className="w-full border rounded-md p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />

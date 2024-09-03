@@ -5,12 +5,15 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
+import { useUserStore } from "@/store/UserStore";
 import axios from "axios";
+import Cookies from "js-cookie";
+import { PoundSterling } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useCookies } from "react-cookie";
 
 const Overview = () => {
-  const [cookies] = useCookies(["buka"]);
+  const token = Cookies.get("user");
+  const { details } = useUserStore();
   const [orders, setOrders] = useState([]);
   const [filteredOrders, setFilteredOrders] = useState([]);
   const [error, setError] = useState(null);
@@ -18,8 +21,7 @@ const Overview = () => {
   const [mostSoldItem, setMostSoldItem] = useState(null);
   const [displayedOrders, setDisplayedOrders] = useState(10);
 
-  const bukaId = cookies?.buka?._id;
-  const token = cookies?.buka?.token;
+  const bukaId = details?._id;
 
   const endpoint = `https://buka-store.vercel.app/api/orders`;
 
@@ -69,9 +71,9 @@ const Overview = () => {
 
     // Step 2: Group by cuisine_id and sum quantities
     const itemQuantities = allItems.reduce((acc, item) => {
-      const cuisineId = item.cuisine_id?._id;
+      const cuisineId = item?.cuisine_id?._id;
       if (!acc[cuisineId]) {
-        acc[cuisineId] = { ...item.cuisine_id, totalQuantity: 0 };
+        acc[cuisineId] = { ...item?.cuisine_id, totalQuantity: 0 };
       }
       acc[cuisineId].totalQuantity += item.quantity;
       return acc;
@@ -115,8 +117,9 @@ const Overview = () => {
             <CardTitle className="text-lg font-medium">Total Income</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-center">
-              ${totalIncome?.toLocaleString()}
+            <div className="text-2xl font-bold flex items-center justify-center text-center ">
+              <PoundSterling width={20} />
+              {totalIncome?.toLocaleString()}
             </div>
           </CardContent>
         </Card>
@@ -148,7 +151,7 @@ const Overview = () => {
 
       <div className="mt-6">
         <h2 className="text-2xl font-semibold mb-4">Most Sold Item</h2>
-        {mostSoldItem ? (
+        {mostSoldItem && mostSoldItem._id ? (
           <Carousel className="w-full">
             <CarouselContent>
               <CarouselItem
@@ -168,15 +171,16 @@ const Overview = () => {
                       <h3 className="font-semibold text-lg text-center">
                         {mostSoldItem?.cuisine_name}
                       </h3>
-                      <p className="font-semibold text-sm text-center">
+                      <p className="font-semibold text-sm text-center mb-6">
                         {mostSoldItem?.cuisine_type}
                       </p>
                       <div className="flex items-center justify-between mb-6">
                         <h3 className="font-semibold text-base">
-                          {mostSoldItem?.cuisine_name}
+                          {mostSoldItem?.ready_time_unit} mins
                         </h3>
-                        <div className="text-primary font-semibold">
-                          ${mostSoldItem?.price}
+                        <div className="text-primary font-semibold flex ">
+                          <PoundSterling width={15} />
+                          {mostSoldItem?.price}
                         </div>
                       </div>
                     </CardContent>
@@ -201,7 +205,9 @@ const Overview = () => {
               <th className="px-4 py-2 text-left border-r">
                 Order Description
               </th>
-              <th className="px-4 py-2 text-left border-r">Amount</th>
+              <th className="px-4 py-2 text-left border-r flex">
+                Amount (<PoundSterling width={15} />){" "}
+              </th>
               <th className="px-4 py-2 text-left border-r">Order Status</th>
               <th className="px-4 py-2 text-left">Payment Method</th>
             </tr>
@@ -227,7 +233,7 @@ const Overview = () => {
                   </div>
                 </td>
                 <td className="px-4 py-2 border-r">
-                  ${order.order_total.toFixed(2)}
+                  {order.order_total.toFixed(2)}
                 </td>
                 <td className="px-4 py-2 border-r">{order?.order_status}</td>
                 <td className="px-4 py-2">

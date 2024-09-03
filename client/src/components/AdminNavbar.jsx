@@ -1,21 +1,21 @@
 import { Button } from "@/components/ui/button";
-import axios from "axios";
-import { useCookies } from "react-cookie";
+import { useUserStore } from "@/store/UserStore";
+import Cookies from "js-cookie";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-const endpoint = "https://buka-store.vercel.app/api/users/logout";
-
 const AdminNavbar = () => {
-  const [cookies] = useCookies(["admin"]);
+  const { details, validateToken } = useUserStore();
   const navigate = useNavigate();
 
-  const logout = async () => {
-    try {
-      await axios.get(endpoint, {}, { withCredentials: true });
-      navigate("/login");
-    } catch (error) {
-      console.log(error);
-    }
+  useEffect(() => {
+    // Validate the token when the component mounts
+    validateToken();
+  }, [validateToken]);
+
+  const logout = () => {
+    Cookies.remove("user");
+    navigate("/login");
   };
 
   return (
@@ -24,7 +24,7 @@ const AdminNavbar = () => {
       <div className="flex items-center">
         <div className="ml-4">
           <div className="text-lg font-semibold">
-            {cookies?.admin?.first_name} {cookies?.admin?.last_name}
+            {details?.first_name} {details?.last_name}
           </div>
           <div className={`text-sm`}>Admin</div>
         </div>

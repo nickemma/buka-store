@@ -105,8 +105,8 @@ export const createCheckout = async (req: Request, res: Response) => {
         quantity: item.quantity,
       };
     }),
-    success_url: 'http://localhost:5173/success',
-    cancel_url: 'http://localhost:5173/cancel',  
+    success_url: 'https://buka-store-rqvo.vercel.app/success',
+    cancel_url: 'https://buka-store-rqvo.vercel.app/cancel',  
   })
 
   // Extract cuisine IDs from the request body
