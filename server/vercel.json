@@ -11,21 +11,5 @@
       "src": "/(.*)",
       "dest": "/"
     }
-  ],
-  "headers": [
-    {
-      "source": "/api/orders/create-checkout-session",
-      "headers": [
-        {
-          "key": "Access-Control-Allow-Origin",
-          "value": "https://buka-store-rqvo.vercel.app"
-        },
-        {
-          "key": "Access-Control-Allow-Credentials",
-          "value": "true"
-        }
-      ]
-    }
   ]
 }
-

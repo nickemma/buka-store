@@ -11,8 +11,8 @@ import { toast } from "sonner";
 import Cookies from "js-cookie";
 import { useUserStore } from "@/store/UserStore";
 
-// const endpoint = "https://buka-store.vercel.app/api/orders/";
-const endpoint = "http://localhost:5000/api/orders/";
+const endpoint = "https://buka-store.vercel.app/api/orders/";
+// const endpoint = "http://localhost:5000/api/orders/";
 
 const CartCheckout = () => {
   // fetching cuisines from cookies
