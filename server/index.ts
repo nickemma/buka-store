@@ -49,6 +49,7 @@ app.use('/api/help_center', helpCenterRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/admin', adminRoutes);
 app.use("/api/users", getUserRole);
+app.options('/api/orders/create-checkout-session', cors());
 
 //============= Swagger UI Docs
 const options = {
