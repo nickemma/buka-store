@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import Order from '../models/order_model';
 import dotenv from 'dotenv';
 import Stripe from 'stripe';
+import { v4 as uuidv4 } from 'uuid';
 
 dotenv.config();
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
@@ -11,11 +12,26 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
 
 // Create a new order
 export const createOrder = async (req: Request, res: Response) => {
+  console.log(req.body)
   try {
-    const newOrder = new Order(req.body);
+    const { order_buka } = req.body;
+
+    if (!order_buka) {
+      return res.status(400).json({ message: 'Order Buka is required.' });
+    }
+
+    const order_number = uuidv4(); 
+
+    const newOrder = new Order({
+      ...req.body,
+      order_number,
+    });
+
     await newOrder.save();
+
     res.status(201).json(newOrder);
-  } catch (error) {
+  } catch (error: any) {
+    console.log(error.message)
     res.status(500).json({ message: 'Something went wrong. Please try again...' });
   }
 };
@@ -39,6 +55,8 @@ export const getOrder = async (req: Request, res: Response) => {
 
 // Update an order by ID
 export const updateOrder = async (req: Request, res: Response) => {
+  console.log(req.body);
+  console.log("updating order details")
   try {
     const updatedOrder = await Order.findByIdAndUpdate(req.params.id, req.body, {
       new: true,

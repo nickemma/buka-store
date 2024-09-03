@@ -32,6 +32,30 @@ const CartCheckout = () => {
     );
 
     try {
+      // Step 1: Create the order
+      const responseBody = await axios.post(
+        endpoint + `create`,
+        {
+          order_items: cart?.map((item) => ({
+            cuisine_id: item._id,
+            quantity: item.quantity,
+            price: item.price,
+          })),
+          order_total: total,
+          order_owner: details?._id,
+          order_buka: cart?.[0]?.cuisine_owner?._id,
+          order_status: "pending",
+          delivery_date: new Date(),
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      // Step 2: Initiate the payment
       const response = await axios.post(
         endpoint + `create-checkout-session`,
         cart?.map((item) => ({
@@ -48,15 +72,17 @@ const CartCheckout = () => {
           },
         }
       );
-      const { id, orderId } = response.data;
+      const { id } = response.data;
 
+      // Redirect to Stripe Checkout
       const result = await stripe.redirectToCheckout({
         sessionId: id,
       });
 
       if (response?.data) {
+        // Step 3: Update the order after successful payment
+        updateTransaction(responseBody.data._id);
         localStorage.removeItem("cart");
-        updateTransaction(orderId);
       }
 
       if (result.error) {
@@ -71,48 +97,34 @@ const CartCheckout = () => {
     }
   };
 
-  const updateTransaction = async (orderId) => {
-    console.log("orderId", orderId);
-    await axios
-      .patch(
-        endpoint + `update/${orderId}`,
+  const updateTransaction = async (responseBody) => {
+    try {
+      const response = await axios.put(
+        endpoint + `update/${responseBody.data._id}`,
         {
           is_paid: true,
+          order_status: "Success",
         },
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: "Bearer " + token,
+            Authorization: `Bearer ${token}`,
           },
         }
-      )
-      .then((res) => {
-        setLoading(false);
-        console.log(res.data);
-        toast.success("Payment successfully", {
-          action: {
-            label: "Close",
-            onClick: () => console.log("Undo"),
-          },
-        });
-      })
-      .catch((err) => {
-        console.log(err, "Catch error");
-        toast.error(
-          <div>
-            {err?.response.data.errors
-              ? err?.response.data.errors.map((item) => item)
-              : err?.response.data.message}
-          </div>,
-          {
-            action: {
-              label: "Close",
-              onClick: () => console.log("Undo"),
-            },
-          }
-        );
-        setLoading(false);
-      });
+      );
+      console.log("Order updated successfully", response.data);
+      toast.success("Payment successfully");
+    } catch (err) {
+      console.log(err, "Catch error");
+      setLoading(false);
+      toast.error(
+        <div>
+          {err?.response.data.errors
+            ? err?.response.data.errors.map((item) => item)
+            : err?.response.data.message}
+        </div>
+      );
+    }
   };
 
   return (

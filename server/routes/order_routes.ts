@@ -159,7 +159,7 @@ router.get('/:id', protect, getOrder);
  *       404:
  *         description: Order not found
  */
-router.patch('/update/:id', protect, updateOrder);
+router.put('/update/:id', protect, updateOrder);
 
 /**
  * @swagger
