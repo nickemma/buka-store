@@ -50,18 +50,18 @@ const UserNavbar = () => {
 
       <div className="flex items-center gap-3  ">
         <div
-          className="relative w-40 h-10 rounded-full cursor-pointer transition-all duration-300 bg-gray-300 flex justify-between"
+          className="relative w-36 h-10 rounded-full cursor-pointer transition-all duration-300 bg-gray-300 flex justify-between"
           onClick={handleToggle}
         >
           <span
-            className={`flex-1 text-center rounded-full py-2 transition-colors duration-300 ${
+            className={`flex-1 text-center text-[0.8rem] rounded-full py-2 transition-colors duration-300 ${
               preOrder ? "bg-green-600 text-white" : "bg-gray-300 text-black"
             }`}
           >
             Pre-Order
           </span>
           <span
-            className={`flex-1 text-center rounded-full py-2 transition-colors duration-300 ${
+            className={`flex-1 text-center text-[0.8rem] rounded-full py-2 transition-colors duration-300 ${
               preOrder ? "bg-gray-300 text-black" : "bg-green-600 text-white"
             }`}
           >
