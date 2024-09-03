@@ -190,13 +190,14 @@ function KitchenPage() {
                         </div>
                       </div>
                       <Button
+                        className="bg-white"
                         onClick={(e) => {
-                          e.stopPropagation(); // Prevent the click event from triggering the card click
+                          e.stopPropagation();
                           setOpen(true);
                           setSelected(item);
                         }}
                       >
-                        <PlusCircle />
+                        <PlusCircle className="text-green-500" />
                       </Button>
                     </div>
                   ))}
