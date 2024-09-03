@@ -89,10 +89,11 @@ export const getAllOrders = async (req: Request, res: Response) => {
 
 export const createCheckout = async (req: Request, res: Response) => {
   try {
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
-      mode: "payment",
-      line_items: req.body?.map((item: any) => ({
+  const session = await stripe.checkout.sessions.create({
+    payment_method_types: ['card'],
+    mode: "payment",
+    line_items: req.body?.map((item: any) => {
+      return {
         price_data: {
           currency: 'usd',
           product_data: {
@@ -102,18 +103,17 @@ export const createCheckout = async (req: Request, res: Response) => {
           unit_amount: item.price * 100,
         },
         quantity: item.quantity,
-      })),
-      success_url: 'https://buka-store-rqvo.vercel.app/success',
-      cancel_url: 'https://buka-store-rqvo.vercel.app/cancel',  
-    });
+      };
+    }),
+    success_url: 'https://buka-store-rqvo.vercel.app/success',
+    cancel_url: 'https://buka-store-rqvo.vercel.app/cancel',  
+  })
 
-    // Extract cuisine IDs from the request body
+  // Extract cuisine IDs from the request body
     const cuisineIds = req.body?.map((item: any) => item?.cuisine_id);
 
-    res.json({ id: session.id, orderId: cuisineIds });
+  res.json({ id: session.id, orderId: cuisineIds}); 
   } catch (error: any) {
-    console.error("Error creating checkout session:", error.message);
-    res.status(500).json({ error: "Internal Server Error" });
+    console.log(error.message)
   }
-};
-
+}
