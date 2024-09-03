@@ -72,6 +72,7 @@ const CartCheckout = () => {
   };
 
   const updateTransaction = async (orderId) => {
+    console.log("orderId", orderId);
     await axios
       .patch(
         endpoint + `update/${orderId}`,
