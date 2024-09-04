@@ -18,8 +18,12 @@ import reviewRoutes from './routes/review_routes';
 import helpCenterRoutes from './routes/help_center_routes';
 import adminRoutes from './routes/admin_routes';
 import getUserRole from './routes/user_routes';
+import webhookRoute from './routes/webhook_route'
 
 const app = express();
+
+// ============= Webhook Route 
+app.use("/api", webhookRoute);
 
 //============= Middlewares
 app.use(express.json());
@@ -29,7 +33,6 @@ app.use(
     origin: ["http://localhost:5173","https://buka-store-rqvo.vercel.app", "https://buka-store.vercel.app"],
   })
 );
-
 app.use(morgan('dev'));
 app.use(cookieParser());
 

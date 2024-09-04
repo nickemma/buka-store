@@ -1,18 +1,11 @@
 import { Request, Response } from 'express';
 import Order from '../models/order_model';
 import dotenv from 'dotenv';
-import Stripe from 'stripe';
 import { v4 as uuidv4 } from 'uuid';
-
-dotenv.config();
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-  apiVersion: '2024-06-20',
-});
-
+import {stripe} from '../utils/stripeInit';
 
 // Create a new order
 export const createOrder = async (req: Request, res: Response) => {
-  console.log(req.body)
   try {
     const { order_buka } = req.body;
 
@@ -55,8 +48,6 @@ export const getOrder = async (req: Request, res: Response) => {
 
 // Update an order by ID
 export const updateOrder = async (req: Request, res: Response) => {
-  console.log(req.body);
-  console.log("updating order details")
   try {
     const updatedOrder = await Order.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
@@ -107,15 +98,16 @@ export const getAllOrders = async (req: Request, res: Response) => {
 
 export const createCheckout = async (req: Request, res: Response) => {
   try {
+     const { orderId, cart } = req.body; 
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],
     mode: "payment",
-    line_items: req.body?.map((item: any) => {
+    line_items: cart?.map((item: any) => {
       return {
         price_data: {
           currency: 'usd',
           product_data: {
-            name: item.name,
+            name: item.cuisine_name,
             images: [item.image],
           },
           unit_amount: item.price * 100,
@@ -123,14 +115,15 @@ export const createCheckout = async (req: Request, res: Response) => {
         quantity: item.quantity,
       };
     }),
+
+    metadata: {
+      orderId,
+    },
     success_url: 'https://buka-store-rqvo.vercel.app/success',
     cancel_url: 'https://buka-store-rqvo.vercel.app/cancel',  
   })
 
-  // Extract cuisine IDs from the request body
-    const cuisineIds = req.body?.map((item: any) => item?.cuisine_id);
-
-  res.json({ id: session.id, orderId: cuisineIds}); 
+  res.json({ id: session.id}); 
   } catch (error: any) {
     console.log(error.message)
   }

@@ -7,7 +7,6 @@ import PuffLoader from "react-spinners/PuffLoader";
 import { Link } from "react-router-dom";
 import { useCartStore } from "@/store/CartStore";
 import { loadStripe } from "@stripe/stripe-js";
-import { toast } from "sonner";
 import Cookies from "js-cookie";
 import { useUserStore } from "@/store/UserStore";
 
@@ -27,10 +26,7 @@ const CartCheckout = () => {
   );
 
   const makePayment = async () => {
-    const stripe = await loadStripe(
-      "pk_test_51MOfapIgrifBGT4dyD6usmKJYxwo1wVrP3Icn7qt0spq6ol8E3HANGZAazjf68mJ2UGMhuoogNe9HOEheedQ2m1V00VsKHfZbQ"
-    );
-
+    setLoading(true);
     try {
       // Step 1: Create the order
       const responseBody = await axios.post(
@@ -55,16 +51,12 @@ const CartCheckout = () => {
         }
       );
 
+      const orderId = responseBody.data._id;
+
       // Step 2: Initiate the payment
       const response = await axios.post(
         endpoint + `create-checkout-session`,
-        cart?.map((item) => ({
-          cuisine_id: item._id,
-          name: item?.cuisine_name,
-          image: item?.image,
-          price: item?.price,
-          quantity: item.quantity,
-        })),
+        { orderId, cart },
         {
           headers: {
             "Content-Type": "application/json",
@@ -74,17 +66,15 @@ const CartCheckout = () => {
       );
       const { id } = response.data;
 
+      const stripe = await loadStripe(
+        "pk_test_51MOfapIgrifBGT4dyD6usmKJYxwo1wVrP3Icn7qt0spq6ol8E3HANGZAazjf68mJ2UGMhuoogNe9HOEheedQ2m1V00VsKHfZbQ"
+      );
       // Redirect to Stripe Checkout
-      const result = await stripe.redirectToCheckout({
-        sessionId: id,
-      });
+      const result = await stripe.redirectToCheckout({ sessionId: id });
 
       if (response?.data) {
-        // Step 3: Update the order after successful payment
-        updateTransaction(responseBody.data._id);
         localStorage.removeItem("cart");
       }
-
       if (result.error) {
         console.error("Stripe Checkout Error:", result.error.message);
       }
@@ -94,36 +84,7 @@ const CartCheckout = () => {
         error.response ? error.response.data : error.message
       );
       console.error("Payment Error:", error);
-    }
-  };
-
-  const updateTransaction = async (responseBody) => {
-    try {
-      const response = await axios.put(
-        endpoint + `update/${responseBody.data._id}`,
-        {
-          is_paid: true,
-          order_status: "Success",
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      console.log("Order updated successfully", response.data);
-      toast.success("Payment successfully");
-    } catch (err) {
-      console.log(err, "Catch error");
       setLoading(false);
-      toast.error(
-        <div>
-          {err?.response.data.errors
-            ? err?.response.data.errors.map((item) => item)
-            : err?.response.data.message}
-        </div>
-      );
     }
   };
 
