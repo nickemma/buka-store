@@ -34,7 +34,7 @@ const BukaSchema = new mongoose.Schema({
   },
   image: {
     type: String,
-    default: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSvC1pGhW7_BRwnGuBguLE99tfA0faYflekCA&s',
+    default: 'https://cdn.pixabay.com/photo/2024/02/05/16/07/gas-8554849_1280.jpg',
   },
   phone: {
     type: String,

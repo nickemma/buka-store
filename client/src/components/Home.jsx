@@ -1,15 +1,52 @@
 import { Input } from "@/components/ui/input";
 import ProductCarousel from "./ProductCarousel";
 import useCuisine from "@/components/hooks/useCuisine";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, EffectFade } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/effect-fade";
 
 const Home = () => {
   const { data } = useCuisine();
+
   return (
     <>
-      <div className="w-full h-[400px] relative">
-        <img src="/food-buka.png" className="w-full h-[400px] object-cover " />
+      <div className="w-full h-[450px] relative ">
+        {/* Swiper Slider */}
+        <Swiper
+          modules={[Autoplay, EffectFade]}
+          spaceBetween={0}
+          slidesPerView={1}
+          loop={true}
+          effect="fade"
+          autoplay={{ delay: 3000, disableOnInteraction: false }}
+          className="w-full h-full"
+        >
+          <SwiperSlide>
+            <img
+              src="/food-buka.png"
+              className="w-full h-[400px] object-cover"
+              alt="Food Buka"
+            />
+          </SwiperSlide>
+          <SwiperSlide>
+            <img
+              src="/grilled.png"
+              className="w-full h-[400px] object-cover"
+              alt="grilled Dish"
+            />
+          </SwiperSlide>
+          <SwiperSlide>
+            <img
+              src="/restaurant.jpg"
+              className="w-full h-[400px] object-cover"
+              alt="restaurant Dish"
+            />
+          </SwiperSlide>
+        </Swiper>
 
-        <div className="absolute w-full flex text-center justify-center m-auto -bottom-10 left-0">
+        {/* Search Box */}
+        <div className="absolute w-full flex text-center justify-center m-auto -bottom-10 left-0 z-10">
           <div className="w-full mx-3 md:w-[400px] shadow-md h-[200px] flex flex-col items-center justify-center rounded-3xl bg-white">
             <h2 className="text-[1.5rem] text-[#000] font-medium">
               Homemade meals made with ingenuity and love
@@ -31,6 +68,7 @@ const Home = () => {
           </div>
         </div>
       </div>
+
       <ProductCarousel data={data} header="Popular Meals" />
     </>
   );

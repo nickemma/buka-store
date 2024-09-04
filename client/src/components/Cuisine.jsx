@@ -46,15 +46,23 @@ function Cuisines() {
           </div>
         </div>
         <div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 px-10">
-            {filteredData?.slice(0, visibleCount).map((item) => (
-              <ProductCard item={item} key={item?._id} />
-            ))}
-          </div>
-          {visibleCount < filteredRestaurants.length && (
-            <div className="text-center mt-6">
-              <Button onClick={handleLoadMore}>Load More</Button>
-            </div>
+          {filteredData.length > 0 ? (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 px-10">
+                {filteredData?.slice(0, visibleCount)?.map((item) => (
+                  <ProductCard item={item} key={item?._id} />
+                ))}
+              </div>
+              {visibleCount < filteredRestaurants?.length && (
+                <div className="text-center mt-6">
+                  <Button onClick={handleLoadMore}>Load More</Button>
+                </div>
+              )}
+            </>
+          ) : (
+            <p className="text-center text-gray-500 mt-8">
+              No meals available at the moment.
+            </p>
           )}
         </div>
         {filteredRestaurants.length === 0 && (

@@ -45,7 +45,7 @@ const AdminOverview = () => {
       });
       setData(response.data);
     } catch (err) {
-      setError("Failed to fetch orders");
+      setError("No orders available... Come back");
       console.error(err);
     }
   };
