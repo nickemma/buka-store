@@ -64,7 +64,7 @@ const Home = () => {
             </h2>
 
             <span className="text-[0.6rem] py-3  text-[#000] font-medium">
-              Find a meal close to you
+              Find a Meals and Bukas
             </span>
             <div className="relative">
               <Input

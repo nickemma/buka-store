@@ -7,6 +7,7 @@ import PuffLoader from "react-spinners/PuffLoader";
 import { toast } from "sonner";
 import { useUserStore } from "@/store/UserStore";
 import Cookies from "js-cookie";
+import OpeningHoursInput from "./OpeningHoursInput";
 
 const endpoint = "https://buka-store.vercel.app/api/bukas/";
 
@@ -27,7 +28,7 @@ const BukaProfile = () => {
   const [postcode, setPostcode] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
-
+  const [openingHours, setOpeningHours] = useState([]);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
@@ -41,8 +42,15 @@ const BukaProfile = () => {
       setPostcode(buka?.postcode);
       setPhone(buka?.phone);
       setEmail(buka?.email);
+      setImagePreview(buka?.image);
+      setOpeningHours(buka?.opening_hours || []);
     }
   }, []);
+  const handleOpeningHoursChange = (index, key, value) => {
+    const updatedHours = [...openingHours];
+    updatedHours[index][key] = value;
+    setOpeningHours(updatedHours);
+  };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -50,12 +58,15 @@ const BukaProfile = () => {
       setImage(file);
       const previewUrl = URL.createObjectURL(file);
       setImagePreview(previewUrl);
+      // Cleanup
+      return () => {
+        URL.revokeObjectURL(previewUrl);
+      };
     } else {
       setImage(null);
       setImagePreview("");
     }
   };
-
   const updateBukaHandler = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -71,6 +82,12 @@ const BukaProfile = () => {
     }
     formData.append("phone", phone);
     formData.append("email", email);
+    // Append the opening_hours array without stringifying it
+    openingHours.forEach((item, index) => {
+      formData.append(`opening_hours[${index}][day]`, item.day);
+      formData.append(`opening_hours[${index}][openingTime]`, item.openingTime);
+      formData.append(`opening_hours[${index}][closingTime]`, item.closingTime);
+    });
 
     try {
       const response = await axios.put(`${endpoint}${details?._id}`, formData, {
@@ -172,6 +189,17 @@ const BukaProfile = () => {
               placeholder="Email"
               disabled // Disable email field
             />
+          </div>
+          <div>
+            {openingHours.map((day, index) => (
+              <OpeningHoursInput
+                key={index}
+                day={day.day}
+                index={index}
+                value={day}
+                onChange={handleOpeningHoursChange}
+              />
+            ))}
           </div>
         </div>
 

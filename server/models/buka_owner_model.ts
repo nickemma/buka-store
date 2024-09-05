@@ -1,18 +1,6 @@
 import mongoose, { InferSchemaType } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
-const OpeningHoursSchema = new mongoose.Schema({
-  day: {
-    type: String,
-  },
-  openingTime: {
-    type: String,
-  },
-  closingTime: {
-    type: String,
-  },
-});
-
 const BukaSchema = new mongoose.Schema({
   buka_name: {
     type: String,
@@ -56,18 +44,13 @@ const BukaSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  opening_hours: {
-    type: [OpeningHoursSchema],
-   default: [
-        { day: 'Monday', openingTime: '', closingTime: '' },
-        { day: 'Tuesday', openingTime: '', closingTime: '' },
-        { day: 'Wednesday', openingTime: '', closingTime: '' },
-        { day: 'Thursday', openingTime: '', closingTime: '' },
-        { day: 'Friday', openingTime: '', closingTime: '' },
-        { day: 'Saturday', openingTime: '', closingTime: '' },
-        { day: 'Sunday', openingTime: '', closingTime: '' },
-      ],
-  },
+  opening_hours: [
+    {
+      day: String,
+      openingTime: String,
+      closingTime: String,
+    },
+  ],
   reviews: [
     {
       type: mongoose.Schema.Types.ObjectId,

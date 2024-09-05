@@ -155,6 +155,10 @@ export const getSingleBuka = async (req: Request, res: Response) => {
 // Update a Buka by ID
 export const updateBuka = async (req: AuthorizedRequest<any>, res: Response) => {
   try {
+
+    if (typeof req.body.opening_hours === "string") {
+      req.body.opening_hours = JSON.parse(req.body.opening_hours);
+    }
     const buka = await Buka.findByIdAndUpdate(req?.user?.id, req.body, { new: true });
 
     if (!buka) {
@@ -198,8 +202,9 @@ export const updateBuka = async (req: AuthorizedRequest<any>, res: Response) => 
         token,
       },
     });
-  } catch (error) {
-        res.status(500).json({ message: 'Something went wrong. Please try again...' });
+  } catch (error: any) {
+    console.log("this is an error message",error.message);
+    res.status(500).json({ message: 'Something went wrong. Please try again...' });
   }
 };
 

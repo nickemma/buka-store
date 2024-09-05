@@ -96,7 +96,7 @@ const AddItemForm = ({ isOpen, onClose, onAddItem }) => {
     <>
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white w-full max-w-lg mx-auto p-6 rounded-md shadow-lg">
+          <div className="bg-white w-full max-w-lg mx-auto p-6 rounded-md shadow-lg max-h-[80vh] overflow-y-auto">
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-bold mb-4">Add New Cuisine</h2>
               <button
