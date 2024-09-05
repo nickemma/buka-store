@@ -5,9 +5,20 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, EffectFade } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/effect-fade";
+import { useState } from "react";
 
 const Home = () => {
+  const [searchTerm, setSearchTerm] = useState("");
+
   const { data } = useCuisine();
+
+  const filteredRestaurants = data?.filter(
+    (item) =>
+      item?.cuisine_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item?.cuisine_owner?.buka_name
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase())
+  );
 
   return (
     <>
@@ -58,8 +69,10 @@ const Home = () => {
             <div className="relative">
               <Input
                 type="search"
-                placeholder="Enter your post code"
+                placeholder="Search for a meal or buka"
                 className="pl-2 sm:w-[300px] md:w-[300px] lg:w-[300px] border-green-500"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
               />
               <span className="absolute right-[0.12rem] top-1/2 transform -translate-y-1/2 text-gray-200 pointer-events-none bg-[#006400] py-[0.4rem] px-2 rounded-md">
                 Search
@@ -70,6 +83,11 @@ const Home = () => {
       </div>
 
       <ProductCarousel data={data} header="Popular Meals" />
+      {filteredRestaurants.length === 0 && (
+        <p className="text-center text-gray-500 mt-8">
+          No restaurants found. Try a different search term.
+        </p>
+      )}
     </>
   );
 };

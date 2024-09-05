@@ -17,7 +17,9 @@ function Cuisines() {
   const filteredRestaurants = data.filter(
     (item) =>
       item?.cuisine_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item?.cuisine_name.toLowerCase().includes(searchTerm.toLowerCase())
+      item?.cuisine_owner?.buka_name
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase())
   );
 
   const filteredData = filteredRestaurants?.filter(
@@ -35,7 +37,7 @@ function Cuisines() {
             <Search className="absolute left-1 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <Input
               type="search"
-              placeholder="Search for a dish"
+              placeholder="Search for a meal or buka"
               className="pl-8 sm:w-[300px] md:w-[300px] lg:w-[300px] border-green-500"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
